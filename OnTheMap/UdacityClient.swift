@@ -15,7 +15,10 @@ class UdacityClient : NSObject {
     
     //authentication state
     var sessionID: String? = nil
-    var userID: Int? = nil
+    var userID: String? = nil
+    var firstName: String? = nil
+    var lastName: String? = nil
+    var loginError: String? = nil
     
     override init()
     {
@@ -24,16 +27,33 @@ class UdacityClient : NSObject {
     }
     
     //MARK --- Get
-    /*func taskForGetMethod(method: String, completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask
+    func taskForGetMethod(method: String, completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask
     {
         //build the URL and configure the request
+        let urlString = UdacityClient.Constants.BaseURLSecure + method
+        let url = NSURL(string: urlString)!
+        let request = NSURLRequest(URL: url)
         
         //make the request
-        
-        //parse and use the data (happens in completion handler)
-        
+        let task = session.dataTaskWithRequest(request) { data, response, downloadError in
+            
+            //parse and use the data (happens in completion handler)
+            if let error = downloadError
+            {
+                let newError = UdacityClient.errorForData(data, response: response, error: error)
+                completionHandler(result: nil, error: downloadError)
+            }
+            else
+            {
+                let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) // subset response data
+                UdacityClient.parseJSONWithCompletionHandler(newData, completionHandler: completionHandler)
+            }
+        }
+
         //start the request
-    }*/
+        task.resume()
+        return task
+    }
     
     //MARK --- Post
     func taskForPostMethod(method: String, jsonBody: [String : AnyObject], completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask
