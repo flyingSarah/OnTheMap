@@ -41,7 +41,7 @@ class UdacityClient : NSObject {
             if let error = downloadError
             {
                 let newError = UdacityClient.errorForData(data, response: response, error: error)
-                completionHandler(result: nil, error: downloadError)
+                completionHandler(result: nil, error: newError)
             }
             else
             {
@@ -77,7 +77,7 @@ class UdacityClient : NSObject {
             if let error = downloadError
             {
                 let newError = UdacityClient.errorForData(data, response: response, error: error)
-                completionHandler(result: nil, error: downloadError)
+                completionHandler(result: nil, error: newError)
             }
             else
             {
@@ -123,6 +123,11 @@ class UdacityClient : NSObject {
             if let errorMessage = parsedResult[UdacityClient.JSONResponseKeys.StatusMessage] as? String
             {
                 let userInfo = [NSLocalizedDescriptionKey : errorMessage]
+                
+                if let errorCode = parsedResult[UdacityClient.JSONResponseKeys.StatusCode] as? Int
+                {
+                    return NSError(domain: "Udacity Error", code: errorCode, userInfo: userInfo)
+                }
                 
                 return NSError(domain: "Udacity Error", code: 1, userInfo: userInfo)
             }

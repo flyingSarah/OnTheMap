@@ -54,7 +54,7 @@
                                     <constraint firstAttribute="height" constant="30" id="yZ2-cV-Qca"/>
                                 </constraints>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" returnKeyType="done" secureTextEntry="YES"/>
                                 <connections>
                                     <action selector="textFieldChanged:" destination="vXZ-lx-hvc" eventType="editingChanged" id="CGv-wU-ZC3"/>
@@ -69,9 +69,7 @@
                                 <state key="normal" title="Login">
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
-                                <state key="disabled">
-                                    <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
+                                <state key="disabled" title="Enter Info"/>
                                 <connections>
                                     <action selector="loginToUdacity:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="Giq-wL-iRB"/>
                                 </connections>
@@ -158,13 +156,13 @@
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TwS-Cv-u6u">
                                             <rect key="frame" x="59" y="4" width="33" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Detail" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Fd-oU-2UP">
                                             <rect key="frame" x="59" y="22" width="42" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
@@ -185,7 +183,7 @@
         <!--Map-->
         <scene sceneID="oK7-Cp-EKI">
             <objects>
-                <viewController storyboardIdentifier="MapViewController" id="4yn-Nv-CEK" userLabel="Map" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MapViewController" id="4yn-Nv-CEK" userLabel="Map" customClass="MapViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="CUs-rk-kKd"/>
                         <viewControllerLayoutGuide type="bottom" id="8Ho-Hl-xZO"/>
@@ -251,56 +249,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MfV-y5-Z8O" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="938" y="44"/>
-        </scene>
-        <!--Login Error View Controller-->
-        <scene sceneID="9FG-su-qey">
-            <objects>
-                <viewController storyboardIdentifier="LoginErrorViewController" id="AT1-ky-syl" customClass="LoginErrorViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="v7b-as-CxC"/>
-                        <viewControllerLayoutGuide type="bottom" id="Wrz-Nx-uXC"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="szS-fH-1oX">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Error Text" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="10" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="AUj-C4-odQ">
-                                <rect key="frame" x="16" y="195" width="568" height="22"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="F6y-jf-fL8">
-                                <rect key="frame" x="16" y="550" width="568" height="30"/>
-                                <color key="backgroundColor" red="1" green="0.34109326359999997" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
-                                <state key="normal" title="OK">
-                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="okButtonTouchUp:" destination="AT1-ky-syl" eventType="touchUpInside" id="K3a-95-fe9"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" red="1" green="0.64705882349999999" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                        <constraints>
-                            <constraint firstItem="AUj-C4-odQ" firstAttribute="trailing" secondItem="szS-fH-1oX" secondAttribute="trailingMargin" id="3xl-b9-sRd"/>
-                            <constraint firstItem="AUj-C4-odQ" firstAttribute="top" secondItem="v7b-as-CxC" secondAttribute="bottom" constant="175" id="AW3-VT-QwN"/>
-                            <constraint firstItem="F6y-jf-fL8" firstAttribute="trailing" secondItem="szS-fH-1oX" secondAttribute="trailingMargin" id="IzS-bC-MYa"/>
-                            <constraint firstItem="F6y-jf-fL8" firstAttribute="leading" secondItem="szS-fH-1oX" secondAttribute="leadingMargin" id="PcK-oJ-PSO"/>
-                            <constraint firstAttribute="centerX" secondItem="AUj-C4-odQ" secondAttribute="centerX" id="Sce-xG-qeP"/>
-                            <constraint firstAttribute="centerX" secondItem="F6y-jf-fL8" secondAttribute="centerX" id="Swq-Ll-3nQ"/>
-                            <constraint firstItem="AUj-C4-odQ" firstAttribute="leading" secondItem="szS-fH-1oX" secondAttribute="leadingMargin" id="ch6-oH-LtD"/>
-                            <constraint firstItem="Wrz-Nx-uXC" firstAttribute="top" secondItem="F6y-jf-fL8" secondAttribute="bottom" constant="20" id="xBz-rD-Arq"/>
-                        </constraints>
-                    </view>
-                    <connections>
-                        <outlet property="errorLabel" destination="AUj-C4-odQ" id="g47-qR-8up"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="lav-eZ-4ea" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="938" y="725"/>
         </scene>
     </scenes>
     <resources>

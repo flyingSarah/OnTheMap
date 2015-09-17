@@ -45,8 +45,8 @@ extension UdacityClient {
     struct JSONResponseKeys
     {
         //TODO: find out what json response keys are in an error message from the Udacity API
-        static let StatusMessage = "????"
-        static let StatusCode = "????"
+        static let StatusMessage = "error"
+        static let StatusCode = "status"
         
         static let Account = "account"
         static let Registered = "registered"

@@ -40,6 +40,22 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         emailTextField.delegate = self
         passwordTextField.delegate = self
         
+        //set placeholder text color
+        //Found out how to do this from this stackoverflow topic: http://stackoverflow.com/questions/26076054/changing-placeholder-text-color-with-swift
+        emailTextField.attributedPlaceholder = NSAttributedString(string: "Email", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor()])
+        passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor()])
+        
+        //add a little left indent/padding on the text fields
+        //Found how to do this from this stackoverflow topic: http://stackoverflow.com/questions/7565645/indent-the-text-in-a-uitextfield
+        var emailSpacerView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
+        emailTextField.leftViewMode = UITextFieldViewMode.Always
+        emailTextField.leftView = emailSpacerView
+        var passwordSpacerView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
+        passwordTextField.leftViewMode = UITextFieldViewMode.Always
+        passwordTextField.leftView = passwordSpacerView
+        
+        loginButton.enabled = false
+        
         //configure the UI
         configureUI()
         
@@ -74,21 +90,53 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             
             if(success)
             {
-                println("login complete!")
+                println("login complete! \(message)")
+                self.completeLogin()
             }
             else
             {
-                println("login failed: message \(message) - error \(error)")
+                println("Login failed: \(message)")
+                
+                //get the description of the specific error that results from the failed request
+                let failureError: NSError = error!
+                let failureString = failureError.userInfo![NSLocalizedDescriptionKey] as! String
+                
+                self.displayError("\(failureString)")
             }
         }
     }
     
     @IBAction func signUpWithUdacity(sender: UIButton)
     {
-        
+        let url = NSURL(string: "https://www.google.com/url?q=https://www.udacity.com/account/auth%23!/signin&sa=D&usg=AFQjCNHOjlXo3QS15TqT0Bp_TKoR9Dvypw")!
+        UIApplication.sharedApplication().openURL(url)
     }
     
     //MARK --- Login Behavior
+    
+    func completeLogin()
+    {
+        dispatch_async(dispatch_get_main_queue(), {
+            
+            let controller = self.storyboard!.instantiateViewControllerWithIdentifier("UserNavigationController") as! UINavigationController
+            self.presentViewController(controller, animated: true, completion: nil)
+        })
+    }
+    
+    func displayError(errorString: String?)
+    {
+        UdacityClient.sharedInstance().loginError = errorString
+        
+        dispatch_async(dispatch_get_main_queue(), {
+            
+            //learned how to implement an alert controller from this website: http://swiftoverload.com/uialertcontroller-swift-example/
+            let alert: UIAlertController = UIAlertController(title: "Login Failed", message: errorString, preferredStyle: .Alert)
+            let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
+            alert.addAction(okAction)
+            
+            self.showViewController(alert, sender: true)
+        })
+    }
     
     @IBAction func textFieldChanged(sender: UITextField)
     {
