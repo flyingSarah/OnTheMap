@@ -1,24 +1,17 @@
 //
-//  UdacityClient.swift
+//  ParseClient.swift
 //  OnTheMap
 //
-//  Created by Sarah Howe on 9/12/15.
+//  Created by Sarah Howe on 9/17/15.
 //  Copyright (c) 2015 SarahHowe. All rights reserved.
 //
 
 import Foundation
 
-class UdacityClient : NSObject {
+class ParseClient : NSObject {
     
     //shared session
     var session: NSURLSession
-    
-    //authentication state
-    var sessionID: String? = nil
-    var userID: String? = nil
-    var firstName: String? = nil
-    var lastName: String? = nil
-    var loginError: String? = nil
     
     override init()
     {
@@ -27,10 +20,10 @@ class UdacityClient : NSObject {
     }
     
     //MARK --- Get
-    func taskForGetMethod(method: String, completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask
+    func taskForGetMethod(method: String, parameters: [String : AnyObject], completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask
     {
-        //build the URL and configure the request
-        let urlString = UdacityClient.Constants.BaseURLSecure + method
+        //build the url and configure the request
+        let urlString = ParseClient.Constants.BaseURLSecure + method + ParseClient.escapedParameters(parameters)
         let url = NSURL(string: urlString)!
         let request = NSURLRequest(URL: url)
         
@@ -40,17 +33,15 @@ class UdacityClient : NSObject {
             //parse and use the data (happens in completion handler)
             if let error = downloadError
             {
-                let newError = UdacityClient.errorForData(data, response: response, error: error)
+                let newError = ParseClient.errorForData(data, response: response, error: error)
                 completionHandler(result: nil, error: newError)
             }
             else
             {
-                let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) // subset response data
-                UdacityClient.parseJSONWithCompletionHandler(newData, completionHandler: completionHandler)
+                ParseClient.parseJSONWithCompletionHandler(data, completionHandler: completionHandler)
             }
         }
-
-        //start the request
+        
         task.resume()
         return task
     }
@@ -59,14 +50,15 @@ class UdacityClient : NSObject {
     func taskForPostMethod(method: String, jsonBody: [String : AnyObject], completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask
     {
         //build the URL and configure the request
-        let urlString = UdacityClient.Constants.BaseURLSecure + method
+        let urlString = ParseClient.Constants.BaseURLSecure + method
         let url = NSURL(string: urlString)!
         let request = NSMutableURLRequest(URL: url)
         
         var jsonifyError: NSError? = nil
         
         request.HTTPMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.addValue(Constants.ParseAppID, forHTTPHeaderField: "X-Parse-Application-Id")
+        request.addValue(Constants.RestAPIKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.HTTPBody = NSJSONSerialization.dataWithJSONObject(jsonBody, options: nil, error: &jsonifyError)
         
@@ -76,13 +68,12 @@ class UdacityClient : NSObject {
             //parse and use the data (happens in completion handler)
             if let error = downloadError
             {
-                let newError = UdacityClient.errorForData(data, response: response, error: error)
+                let newError = ParseClient.errorForData(data, response: response, error: error)
                 completionHandler(result: nil, error: newError)
             }
             else
             {
-                let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) //subset response data
-                UdacityClient.parseJSONWithCompletionHandler(newData, completionHandler: completionHandler)
+                ParseClient.parseJSONWithCompletionHandler(data, completionHandler: completionHandler)
             }
         }
         
@@ -91,45 +82,59 @@ class UdacityClient : NSObject {
         return task
     }
     
-    //MARK --- Delete
-    /*func taskForDeleteMethod(method: String, jsonBody: [String : AnyObject], completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask
+    //MARK --- Put
+    func taskForPutMethod(method: String, jsonBody: [String : AnyObject], completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask
     {
         //build the URL and configure the request
+        let urlString = ParseClient.Constants.BaseURLSecure + method
+        let url = NSURL(string: urlString)!
+        let request = NSMutableURLRequest(URL: url)
+        
+        var jsonifyError: NSError? = nil
+        
+        request.HTTPMethod = "PUT"
+        request.addValue(Constants.ParseAppID, forHTTPHeaderField: "X-Parse-Application-Id")
+        request.addValue(Constants.RestAPIKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.HTTPBody = NSJSONSerialization.dataWithJSONObject(jsonBody, options: nil, error: &jsonifyError)
         
         //make the request
-        
-        //parse and use the data (happens in completion handler)
+        let task = session.dataTaskWithRequest(request) { data, response, downloadError in
+            
+            //parse and use the data (happens in completion handler)
+            if let error = downloadError
+            {
+                let newError = ParseClient.errorForData(data, response: response, error: error)
+                completionHandler(result: nil, error: newError)
+            }
+            else
+            {
+                ParseClient.parseJSONWithCompletionHandler(data, completionHandler: completionHandler)
+            }
+        }
         
         //start the request
-    }*/
+        task.resume()
+        return task
+    }
     
     //MARK --- Helpers
     
-    //Substitute the key for the value that is contained within the method name
-    /*class func substituteKeyInMethod(method: String, key: String, value: String) -> String?
-    {
-        if(method.rangeOfString("{\(key)}") != nil)
-        {
-            return method.stringByReplacingOccurrencesOfString("{\(key)}", withString: value)
-        }
-        return nil
-    }*/
-    
-    //Given a response with error, see if a status_message is returned, otherwise return the previous error
+    //given a response with error, see if a status_message is returned, otherwise return the previous error
     class func errorForData(data: NSData?, response: NSURLResponse?, error: NSError) -> NSError
     {
         if let parsedResult = NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments, error: nil) as? [String : AnyObject]
         {
-            if let errorMessage = parsedResult[UdacityClient.JSONResponseKeys.StatusMessage] as? String
+            if let errorMessage = parsedResult[ParseClient.JSONResponseKeys.StatusMessage] as? String
             {
                 let userInfo = [NSLocalizedDescriptionKey : errorMessage]
                 
-                if let errorCode = parsedResult[UdacityClient.JSONResponseKeys.StatusCode] as? Int
+                if let errorCode = parsedResult[ParseClient.JSONResponseKeys.StatusCode] as? Int
                 {
-                    return NSError(domain: "Udacity Error", code: errorCode, userInfo: userInfo)
+                    return NSError(domain: "Parse Error", code: errorCode, userInfo: userInfo)
                 }
                 
-                return NSError(domain: "Udacity Error", code: 1, userInfo: userInfo)
+                return NSError(domain: "Parse Error", code: 1, userInfo: userInfo)
             }
         }
         
@@ -153,22 +158,22 @@ class UdacityClient : NSObject {
         }
     }
     
-    //Given a dictionary of parameters, convert to a string for a url
-    /*class func escapedParameters(parameters: [String : AnyObject]) -> String
+    //given a dictionary of parameters, convert to a string for a url
+    class func escapedParameters(parameters: [String : AnyObject]) -> String
     {
         var queryItems = map(parameters) { NSURLQueryItem(name: $0, value: $1 as! String) }
         var components = NSURLComponents()
         
         components.queryItems = queryItems
         return components.percentEncodedQuery ?? ""
-    }*/
+    }
     
     //MARK --- Shared Instance
-    class func sharedInstance() -> UdacityClient
+    class func sharedInstance() -> ParseClient
     {
         struct Singleton
         {
-            static var sharedInstance = UdacityClient()
+            static var sharedInstance = ParseClient()
         }
         
         return Singleton.sharedInstance
