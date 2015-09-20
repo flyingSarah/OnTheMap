@@ -13,7 +13,7 @@ struct StudentLocation {
     var latitude: Double? = nil
     var longitude: Double? = nil
     var mapString = ""
-    var mediaURL = ""
+    var mediaURL: String? = nil
     var objectID = ""
     var uniqueKey = ""
     var createdAt = ""
@@ -27,7 +27,7 @@ struct StudentLocation {
         latitude = dictionary[ParseClient.JSONResponseKeys.Latitude] as? Double
         longitude = dictionary[ParseClient.JSONResponseKeys.Longitude] as? Double
         mapString = dictionary[ParseClient.JSONResponseKeys.MapString] as! String
-        mediaURL = dictionary[ParseClient.JSONResponseKeys.MediaURL] as! String
+        mediaURL = dictionary[ParseClient.JSONResponseKeys.MediaURL] as? String
         objectID = dictionary[ParseClient.JSONResponseKeys.ObjectID] as! String
         uniqueKey = dictionary[ParseClient.JSONResponseKeys.UniqueKey] as! String
         createdAt = dictionary[ParseClient.JSONResponseKeys.CreatedAt] as! String

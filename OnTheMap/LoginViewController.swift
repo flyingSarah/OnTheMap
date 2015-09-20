@@ -86,22 +86,21 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     {
         dismissAnyVisibleKeyboards()
         
-        UdacityClient.sharedInstance().createSession(emailTextField.text, password: passwordTextField.text) { success, message, error in
+        UdacityClient.sharedInstance().createSession(emailTextField.text, password: passwordTextField.text) { message, error in
             
-            if(success)
-            {
-                println("login complete! \(message)")
-                self.completeLogin()
-            }
-            else
+            if let error = error
             {
                 println("Login failed: \(message)")
                 
                 //get the description of the specific error that results from the failed request
-                let failureError: NSError = error!
-                let failureString = failureError.userInfo![NSLocalizedDescriptionKey] as! String
+                let failureString = error.userInfo![NSLocalizedDescriptionKey] as! String
                 
                 self.displayError("\(failureString)")
+            }
+            else
+            {
+                println("login complete! \(message)")
+                self.completeLogin()
             }
         }
     }

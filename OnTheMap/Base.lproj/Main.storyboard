@@ -178,7 +178,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="K9p-rf-Wdi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2457" y="382"/>
+            <point key="canvasLocation" x="2799" y="606"/>
         </scene>
         <!--Map-->
         <scene sceneID="oK7-Cp-EKI">
@@ -207,18 +207,39 @@
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Map" image="map" id="7Ph-wB-ys3"/>
+                    <toolbarItems/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="mapView" destination="uno-ym-2eq" id="gQM-H6-Tdc"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dC6-6J-Zy3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2457" y="-297"/>
+            <point key="canvasLocation" x="2799" y="-73"/>
+        </scene>
+        <!--Info Posting View Controller-->
+        <scene sceneID="5wR-Ia-0tc">
+            <objects>
+                <viewController storyboardIdentifier="InfoPostingViewController" id="61m-41-s0E" customClass="InfoPostingViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ISp-z9-bFA"/>
+                        <viewControllerLayoutGuide type="bottom" id="0gU-mH-qtt"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="cQW-RZ-OW9">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Yq8-2y-k2D" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3611" y="302"/>
         </scene>
         <!--User Tab Bar Controller-->
         <scene sceneID="bSJ-im-OMs">
             <objects>
                 <tabBarController id="L72-yy-5ev" userLabel="User Tab Bar Controller" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="WSz-MN-36G">
-                        <barButtonItem key="leftBarButtonItem" title="Logout" id="q68-bv-ZNF"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="WSz-MN-36G"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="49g-up-LoC">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
@@ -232,7 +253,7 @@
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FCl-WD-TcR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1655" y="44"/>
+            <point key="canvasLocation" x="1997" y="268"/>
         </scene>
         <!--User Navigation Controller-->
         <scene sceneID="cbP-ee-NVy">
@@ -248,7 +269,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MfV-y5-Z8O" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="938" y="44"/>
+            <point key="canvasLocation" x="1280" y="268"/>
         </scene>
     </scenes>
     <resources>

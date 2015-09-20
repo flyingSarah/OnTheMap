@@ -22,7 +22,7 @@ extension ParseClient {
             ParseClient.ParameterKeys.Order: "-updatedAt"
         ]
         
-        let method : String = Methods.StudentLocation
+        let method : String = Methods.StudentLocation + "?"
         
         //make the request
         taskForGetMethod(method, parameters: parameters) { JSONResult, error in
@@ -42,6 +42,7 @@ extension ParseClient {
                 }
                 else
                 {
+                    println("Error parsing getStudentLocation -- couldn't find results string in json result")
                     completionHandler(result: nil, error: NSError(domain: "getStudentLocation parsing", code: 0, userInfo: [NSLocalizedDescriptionKey : "Could not parse getStudentLocation"]))
                 }
             }
@@ -58,7 +59,7 @@ extension ParseClient {
             ParseClient.JSONBodyKeys.FirstName: location.firstName,
             ParseClient.JSONBodyKeys.LastName: location.lastName,
             ParseClient.JSONBodyKeys.MapString: location.mapString,
-            ParseClient.JSONBodyKeys.MediaURL: location.mediaURL,
+            ParseClient.JSONBodyKeys.MediaURL: location.mediaURL! as String,
             ParseClient.JSONBodyKeys.Latitude: location.latitude! as Double,
             ParseClient.JSONBodyKeys.Longitude: location.longitude! as Double
         ]
@@ -69,6 +70,7 @@ extension ParseClient {
             //send the desired values to the completion handler
             if let error = error
             {
+                println("error from post method \(error)")
                 completionHandler(result: nil, error: error)
             }
             else
@@ -83,11 +85,13 @@ extension ParseClient {
                     }
                     else
                     {
+                        println("Error parsing postStudentLocation -- couldn't find createdAt in json result")
                         completionHandler(result: nil, error: NSError(domain: "postStudentLocation parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "couldn't find createdAt key in result"]))
                     }
                 }
                 else
                 {
+                    println("Error parsing postStudentLocation -- couldn't find objectID in json result")
                     completionHandler(result: nil, error: NSError(domain: "postStudentLocation parsing", code: 0, userInfo: [NSLocalizedDescriptionKey: "couldn't find objectID key in result"]))
                 }
             }

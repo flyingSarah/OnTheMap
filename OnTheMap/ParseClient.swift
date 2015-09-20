@@ -13,6 +13,9 @@ class ParseClient : NSObject {
     //shared session
     var session: NSURLSession
     
+    //shared student location arrays
+    var studentLocations = [StudentLocation]()
+    
     override init()
     {
         session = NSURLSession.sharedSession()
@@ -25,7 +28,9 @@ class ParseClient : NSObject {
         //build the url and configure the request
         let urlString = ParseClient.Constants.BaseURLSecure + method + ParseClient.escapedParameters(parameters)
         let url = NSURL(string: urlString)!
-        let request = NSURLRequest(URL: url)
+        let request = NSMutableURLRequest(URL: url)
+        request.addValue(Constants.ParseAppID, forHTTPHeaderField: "X-Parse-Application-Id")
+        request.addValue(Constants.RestAPIKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
         
         //make the request
         let task = session.dataTaskWithRequest(request) { data, response, downloadError in
@@ -121,7 +126,7 @@ class ParseClient : NSObject {
     //MARK --- Helpers
     
     //given a response with error, see if a status_message is returned, otherwise return the previous error
-    class func errorForData(data: NSData?, response: NSURLResponse?, error: NSError) -> NSError
+    class func errorForData(data: NSData?, response: NSURLResponse?, error: NSError?) -> NSError
     {
         if let parsedResult = NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments, error: nil) as? [String : AnyObject]
         {
@@ -138,7 +143,7 @@ class ParseClient : NSObject {
             }
         }
         
-        return error
+        return error!
     }
     
     //Given raw JSON, return a useable Foundation object
@@ -154,7 +159,16 @@ class ParseClient : NSObject {
         }
         else
         {
-            completionHandler(result: parsedResult, error: nil)
+            if let errorMessage = parsedResult?.valueForKey(ParseClient.JSONResponseKeys.StatusMessage) as? String
+            {
+                let newError = errorForData(data, response: nil, error: nil)
+                completionHandler(result: nil, error: newError)
+            }
+            else
+            {
+                completionHandler(result: parsedResult, error: nil)
+            }
+            
         }
     }
     
