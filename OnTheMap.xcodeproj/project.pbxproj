@@ -12,6 +12,7 @@
 		350C88C81BABBF6600D7DCCC /* ParseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 350C88C71BABBF6600D7DCCC /* ParseClient.swift */; };
 		350C88CA1BABBF9200D7DCCC /* ParseConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 350C88C91BABBF9200D7DCCC /* ParseConstants.swift */; };
 		350C88CC1BABBFA700D7DCCC /* ParseConvenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 350C88CB1BABBFA700D7DCCC /* ParseConvenience.swift */; };
+		354A388D1BAF1BBF00CCBC38 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354A388C1BAF1BBF00CCBC38 /* TableViewController.swift */; };
 		357B927E1BAE452400CCFD1D /* InfoPostingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 357B927D1BAE452400CCFD1D /* InfoPostingViewController.swift */; };
 		358ECA301BACF2AC0041DC75 /* StudentLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358ECA2F1BACF2AC0041DC75 /* StudentLocation.swift */; };
 		35FE3A7A1BA2873900F2DEF9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35FE3A791BA2873900F2DEF9 /* AppDelegate.swift */; };
@@ -41,6 +42,7 @@
 		350C88C71BABBF6600D7DCCC /* ParseClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseClient.swift; sourceTree = "<group>"; };
 		350C88C91BABBF9200D7DCCC /* ParseConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseConstants.swift; sourceTree = "<group>"; };
 		350C88CB1BABBFA700D7DCCC /* ParseConvenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseConvenience.swift; sourceTree = "<group>"; };
+		354A388C1BAF1BBF00CCBC38 /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		357B927D1BAE452400CCFD1D /* InfoPostingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoPostingViewController.swift; sourceTree = "<group>"; };
 		358ECA2F1BACF2AC0041DC75 /* StudentLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentLocation.swift; sourceTree = "<group>"; };
 		35FE3A741BA2873900F2DEF9 /* OnTheMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OnTheMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -77,6 +79,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		354A388E1BAF1C5800CCBC38 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				35FE3A7D1BA2873900F2DEF9 /* Main.storyboard */,
+				35FE3A801BA2873900F2DEF9 /* Images.xcassets */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
 		35FE3A6B1BA2873900F2DEF9 = {
 			isa = PBXGroup;
 			children = (
@@ -100,10 +111,9 @@
 			isa = PBXGroup;
 			children = (
 				35FE3A9A1BA53AC900F2DEF9 /* Model */,
+				354A388E1BAF1C5800CCBC38 /* View */,
 				35FE3A991BA53A9A00F2DEF9 /* Controller */,
 				35FE3A791BA2873900F2DEF9 /* AppDelegate.swift */,
-				35FE3A7D1BA2873900F2DEF9 /* Main.storyboard */,
-				35FE3A801BA2873900F2DEF9 /* Images.xcassets */,
 				35FE3A821BA2873900F2DEF9 /* LaunchScreen.xib */,
 				35FE3A771BA2873900F2DEF9 /* Supporting Files */,
 			);
@@ -140,6 +150,7 @@
 			children = (
 				35FE3A7B1BA2873900F2DEF9 /* LoginViewController.swift */,
 				350279641BAA83E2006608D4 /* MapViewController.swift */,
+				354A388C1BAF1BBF00CCBC38 /* TableViewController.swift */,
 				357B927D1BAE452400CCFD1D /* InfoPostingViewController.swift */,
 			);
 			name = Controller;
@@ -274,6 +285,7 @@
 				35FE3A9F1BA5472C00F2DEF9 /* UdacityConstants.swift in Sources */,
 				35FE3A7A1BA2873900F2DEF9 /* AppDelegate.swift in Sources */,
 				35FE3AA11BA54E6100F2DEF9 /* UdacityConvenience.swift in Sources */,
+				354A388D1BAF1BBF00CCBC38 /* TableViewController.swift in Sources */,
 				35FE3A9D1BA53BA200F2DEF9 /* UdacityClient.swift in Sources */,
 				350C88CC1BABBFA700D7DCCC /* ParseConvenience.swift in Sources */,
 				358ECA301BACF2AC0041DC75 /* StudentLocation.swift in Sources */,

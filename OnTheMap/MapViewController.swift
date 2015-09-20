@@ -31,15 +31,16 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         mapView.delegate = self
         
         //create the needed bar button items - I referenced this website http://stackoverflow.com/questions/30341263/how-to-add-two-multiple-uibarbuttonitems-on-right-side-of-navigation-bar
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("logout:"))
         
-        var refreshButton : UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: Selector("refreshButtonClicked:"))
+        var refreshButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: Selector("refreshButtonClicked:"))
         
         var pinImage: UIImage = UIImage(named: "pin")!
-        var pinButton : UIBarButtonItem = UIBarButtonItem(image: pinImage,  style: UIBarButtonItemStyle.Plain, target: self, action: Selector("addPin:"))
+        var pinButton: UIBarButtonItem = UIBarButtonItem(image: pinImage,  style: UIBarButtonItemStyle.Plain, target: self, action: Selector("addPin:"))
         
         var buttons = [refreshButton, pinButton]
         
-        tabBarController!.navigationItem.rightBarButtonItems = buttons
+        navigationItem.rightBarButtonItems = buttons
         
         //set the locations on the map
         setLocations()
@@ -57,6 +58,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     //MARK --- Tab Bar Buttons
+    
+    func logout(sender: AnyObject)
+    {
+        //TODO: logout of udacity api and present login view
+    }
     
     func addPin(sender: AnyObject)
     {
