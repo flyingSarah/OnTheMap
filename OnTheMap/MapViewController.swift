@@ -61,7 +61,21 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     func logout(sender: AnyObject)
     {
-        //TODO: logout of udacity api and present login view
+        UdacityClient.sharedInstance().logoutOfSession() { result, error in
+            
+            if let error = error
+            {
+                //TODO: make alert view show up with error from the Udacity client
+                let failureString = error.userInfo![NSLocalizedDescriptionKey] as! String
+                println("failure string from udacity client: \(failureString)")
+            }
+            else
+            {
+                println("Successfully logged out of Udacity session")
+                
+                self.dismissViewControllerAnimated(true, completion: nil)
+            }
+        }
     }
     
     func addPin(sender: AnyObject)

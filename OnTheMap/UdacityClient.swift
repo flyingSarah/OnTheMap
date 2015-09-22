@@ -97,16 +97,47 @@ class UdacityClient : NSObject {
     }
     
     //MARK --- Delete
-    /*func taskForDeleteMethod(method: String, jsonBody: [String : AnyObject], completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask
+    func taskForDeleteMethod(method: String, completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask
     {
         //build the URL and configure the request
+        let urlString = UdacityClient.Constants.BaseURLSecure + method
+        let url = NSURL(string: urlString)!
+        let request = NSMutableURLRequest(URL: url)
+        var xsrfCookie: NSHTTPCookie? = nil
+        request.HTTPMethod = "DELETE"
+        let sharedCookieStorage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
+        for cookie in sharedCookieStorage.cookies as! [NSHTTPCookie]
+        {
+            if(cookie.name == "XSRF-TOKEN")
+            {
+                xsrfCookie = cookie
+            }
+        }
+        if let xsrfCookie = xsrfCookie
+        {
+            request.setValue(xsrfCookie.value!, forHTTPHeaderField: "X-XSRF-TOKEN")
+        }
         
         //make the request
-        
-        //parse and use the data (happens in completion handler)
+        let task = session.dataTaskWithRequest(request) { data, response, downloadError in
+            
+            //parse and use the data (happens in completion handler)
+            if let error = downloadError
+            {
+                let newError = UdacityClient.errorForData(data, response: response, error: error)
+                completionHandler(result: nil, error: newError)
+            }
+            else
+            {
+                let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) //subset response data
+                UdacityClient.parseJSONWithCompletionHandler(newData, completionHandler: completionHandler)
+            }
+        }
         
         //start the request
-    }*/
+        task.resume()
+        return task
+    }
     
     //MARK --- Helpers
     

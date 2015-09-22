@@ -53,8 +53,39 @@ extension UdacityClient {
                 }
                 else
                 {
-                    //get a real message by parsing the error json result
+                    //TODO: get a real message by parsing the error json result
                     completionHandler(message: "Couldn't find account dictionary in createSession result", error: NSError(domain: "createSession parsing", code: 0, userInfo: [NSLocalizedDescriptionKey : "Please check your username and password and try again."]))
+                }
+            }
+        }
+    }
+    
+    func logoutOfSession(completionHandler: (message: String, error: NSError?) -> Void)
+    {
+        //specify method
+        var method: String = UdacityClient.Methods.AccountLogIn
+        
+        //make the request
+        taskForDeleteMethod(method) { JSONResult, error in
+            
+            //send the desired values to the completion handler
+            if let error = error
+            {
+                completionHandler(message: "Logout Failed", error: error)
+            }
+            else
+            {
+                if let session = JSONResult.valueForKey(UdacityClient.JSONResponseKeys.Session) as? NSDictionary
+                {
+                    if let sessionID = session.valueForKey(UdacityClient.JSONResponseKeys.SessionID) as? String
+                    {
+                        //get the user data from here
+                        completionHandler(message: "Logout Successful", error: nil)
+                    }
+                }
+                else
+                {
+                    completionHandler(message: "Couldn't find session dictionary in logoutOfSession result", error: NSError(domain: "logoutOfSession parsing", code: 0, userInfo: [NSLocalizedDescriptionKey : "Unknown error: Try logging out again."]))
                 }
             }
         }
