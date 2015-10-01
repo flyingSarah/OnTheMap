@@ -56,9 +56,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         
         loginButton.enabled = false
         
-        //configure the UI
-        configureUI()
-        
         //initialize tap recognizer
         tapRecognizer = UITapGestureRecognizer(target: self, action: Selector("handleSingleTap:"))
         tapRecognizer!.numberOfTapsRequired = 1
@@ -171,14 +168,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     {
         view.endEditing(true)
         return true
-    }
-    
-    
-    //MARK --- UI configuration
-    
-    func configureUI()
-    {
-        //TODO: configure background gradient
     }
 }
 

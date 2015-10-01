@@ -65,9 +65,18 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             
             if let error = error
             {
-                //TODO: make alert view show up with error from the Udacity client
-                let failureString = error.userInfo![NSLocalizedDescriptionKey] as! String
-                println("failure string from udacity client: \(failureString)")
+                //make alert view show up with error from the Udacity client
+                dispatch_async(dispatch_get_main_queue(), {
+                    
+                    let failureString = error.userInfo![NSLocalizedDescriptionKey] as! String
+                    println("failure string from udacity client: \(failureString)")
+                    
+                    let alert: UIAlertController = UIAlertController(title: "Udacity Logout Error", message: failureString, preferredStyle: .Alert)
+                    let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
+                    alert.addAction(okAction)
+                    
+                    self.presentViewController(alert, animated: true, completion: nil)
+                })
             }
             else
             {
@@ -85,8 +94,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         let addPinVC = object as! InfoPostingViewController
         
-        //Present the view controller using navigation
-        navigationController?.showViewController(addPinVC, sender: self)
+        //Present the view controller
+        presentViewController(addPinVC, animated: true, completion: nil)
     }
     
     func refreshButtonClicked(sender: AnyObject)
@@ -102,9 +111,18 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             
             if let error = error
             {
-                //TODO: make alert view show up with error from the Parse Client
-                let failureString = error.userInfo![NSLocalizedDescriptionKey] as! String
-                println("failure string from parse client: \(failureString)")
+                //make alert view show up with error from the Parse Client
+                dispatch_async(dispatch_get_main_queue(), {
+                    
+                    let failureString = error.userInfo![NSLocalizedDescriptionKey] as! String
+                    println("failure string from parse client: \(failureString)")
+                    
+                    let alert: UIAlertController = UIAlertController(title: "Parse Error", message: failureString, preferredStyle: .Alert)
+                    let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
+                    alert.addAction(okAction)
+                    
+                    self.presentViewController(alert, animated: true, completion: nil)
+                })
             }
             else
             {

@@ -135,6 +135,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="171" y="267"/>
         </scene>
         <!--List-->
         <scene sceneID="IHX-vS-Sjt">
@@ -153,13 +154,13 @@
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="b3W-9C-DZc">
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="eGF-zO-MyI">
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" image="pin" id="l4M-hZ-MHx">
@@ -276,6 +277,9 @@
                                 <state key="normal" title="Cancel">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="cancel:" destination="61m-41-s0E" eventType="touchUpInside" id="1Zc-T1-OMp"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vBh-y2-aHy">
                                 <rect key="frame" x="0.0" y="570" width="600" height="30"/>
@@ -289,6 +293,9 @@
                                 <state key="disabled">
                                     <color key="titleColor" red="0.80874346070000003" green="0.80874346070000003" blue="0.80874346070000003" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
+                                <connections>
+                                    <action selector="postInfo:" destination="61m-41-s0E" eventType="touchUpInside" id="Lu0-Xg-3wb"/>
+                                </connections>
                             </button>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="tv3-wq-xdv">
                                 <rect key="frame" x="0.0" y="163" width="600" height="409"/>
@@ -299,7 +306,7 @@
                                     <constraint firstAttribute="height" constant="69" id="jnI-3i-d6m"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Enter Location" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="DiU-dL-CpU">
@@ -310,6 +317,9 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                <connections>
+                                    <action selector="textFieldChanged:" destination="61m-41-s0E" eventType="editingChanged" id="eac-FS-MGY"/>
+                                </connections>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aWu-Ha-Lho">
                                 <rect key="frame" x="471" y="101" width="128" height="30"/>
@@ -318,8 +328,11 @@
                                     <constraint firstAttribute="width" constant="128" id="NRU-LC-xUT"/>
                                 </constraints>
                                 <state key="normal" title="Find on the Map"/>
+                                <connections>
+                                    <action selector="findLocation:" destination="61m-41-s0E" eventType="touchUpInside" id="PyZ-bM-3hy"/>
+                                </connections>
                             </button>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Enter a URL to share" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="esI-oV-y30">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Enter a URL to share" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="esI-oV-y30">
                                 <rect key="frame" x="0.0" y="135" width="600" height="30"/>
                                 <color key="backgroundColor" red="0.80874346070000003" green="0.80874346070000003" blue="0.80874346070000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -327,6 +340,9 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <action selector="textFieldChanged:" destination="61m-41-s0E" eventType="editingChanged" id="rYc-Xc-5I7"/>
+                                </connections>
                             </textField>
                         </subviews>
                         <color key="backgroundColor" red="0.80874346065454539" green="0.80874346065454539" blue="0.80874346065454539" alpha="1" colorSpace="calibratedRGB"/>
@@ -353,6 +369,13 @@
                             <constraint firstAttribute="trailingMargin" secondItem="esI-oV-y30" secondAttribute="trailing" constant="-16" id="yLR-Lf-4jz"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="findButton" destination="aWu-Ha-Lho" id="B50-9K-D6L"/>
+                        <outlet property="locationTextField" destination="DiU-dL-CpU" id="t3Q-8T-uHc"/>
+                        <outlet property="mapView" destination="tv3-wq-xdv" id="Nte-VI-PNm"/>
+                        <outlet property="submitButton" destination="vBh-y2-aHy" id="wHY-pe-Q8V"/>
+                        <outlet property="urlTextField" destination="esI-oV-y30" id="Ttp-Ra-Z5u"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Yq8-2y-k2D" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

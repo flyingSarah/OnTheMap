@@ -53,7 +53,6 @@ extension UdacityClient {
                 }
                 else
                 {
-                    //TODO: get a real message by parsing the error json result
                     completionHandler(message: "Couldn't find account dictionary in createSession result", error: NSError(domain: "createSession parsing", code: 0, userInfo: [NSLocalizedDescriptionKey : "Please check your username and password and try again."]))
                 }
             }

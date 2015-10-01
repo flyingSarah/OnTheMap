@@ -24,6 +24,7 @@ class UdacityClient : NSObject {
     var latitude: Double? = nil
     var longitude: Double? = nil
     var mediaURL: String? = nil
+    var mapString: String? = nil
     
     override init()
     {
