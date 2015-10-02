@@ -66,17 +66,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             if let error = error
             {
                 //make alert view show up with error from the Udacity client
-                dispatch_async(dispatch_get_main_queue(), {
-                    
-                    let failureString = error.userInfo![NSLocalizedDescriptionKey] as! String
-                    println("failure string from udacity client: \(failureString)")
-                    
-                    let alert: UIAlertController = UIAlertController(title: "Udacity Logout Error", message: failureString, preferredStyle: .Alert)
-                    let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
-                    alert.addAction(okAction)
-                    
-                    self.presentViewController(alert, animated: true, completion: nil)
-                })
+                self.showAlertController("Udacity Logout Error", message: error.localizedDescription)
             }
             else
             {
@@ -112,17 +102,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             if let error = error
             {
                 //make alert view show up with error from the Parse Client
-                dispatch_async(dispatch_get_main_queue(), {
-                    
-                    let failureString = error.userInfo![NSLocalizedDescriptionKey] as! String
-                    println("failure string from parse client: \(failureString)")
-                    
-                    let alert: UIAlertController = UIAlertController(title: "Parse Error", message: failureString, preferredStyle: .Alert)
-                    let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
-                    alert.addAction(okAction)
-                    
-                    self.presentViewController(alert, animated: true, completion: nil)
-                })
+                self.showAlertController("Parse Error", message: error.localizedDescription)
             }
             else
             {
@@ -220,14 +200,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 else
                 {
                     //if the url is not valid, show an alert view
-                    dispatch_async(dispatch_get_main_queue(), {
-                        
-                        let alert: UIAlertController = UIAlertController(title: "URL Lookup Failed", message: "The provided URL is not valid", preferredStyle: .Alert)
-                        let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
-                        alert.addAction(okAction)
-                        
-                        self.presentViewController(alert, animated: true, completion: nil)
-                    })
+                    showAlertController("URL Lookup Failed", message: "The provided URL is not valid.")
                 }
             }
         }
@@ -247,5 +220,19 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
         
         return false
+    }
+    
+    func showAlertController(title: String, message: String)
+    {
+        dispatch_async(dispatch_get_main_queue(), {
+            
+            println("failure string from client: \(message)")
+            
+            let alert: UIAlertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+            let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
+            alert.addAction(okAction)
+            
+            self.presentViewController(alert, animated: true, completion: nil)
+        })
     }
 }

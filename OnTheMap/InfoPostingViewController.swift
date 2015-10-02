@@ -56,7 +56,6 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
     {
         super.viewWillAppear(animated)
         
-        
         var userInfo = UdacityClient.sharedInstance()
         
         //If the user has already posted, show the data associated with the user
@@ -79,6 +78,9 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
             //add the annotation to the map view
             self.mapView.addAnnotation(annotation)
             self.mapAnnotation = annotation
+            
+            submitButton.enabled = true
+            findButton.enabled = true
         }
         
         //add the tap recognizer
@@ -103,16 +105,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
             if error != nil
             {
                 //show alert view when geocoding the address fails
-                dispatch_async(dispatch_get_main_queue(), {
-                    
-                    println("Geocoder Error using this text: \(self.locationTextField.text) Error: \(error.localizedDescription)")
-                    
-                    let alert: UIAlertController = UIAlertController(title: "Geocoder Error", message: error.localizedDescription, preferredStyle: .Alert)
-                    let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
-                    alert.addAction(okAction)
-                    
-                    self.presentViewController(alert, animated: true, completion: nil)
-                })
+                self.showAlertController("Geocoder Error", message: error.localizedDescription)
                 
                 return
             }
@@ -134,6 +127,15 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
     @IBAction func postInfo(sender: AnyObject)
     {
         dismissAnyVisibleKeyboards()
+        
+        //use an activity monitor for this action
+        var activityIndicator = UIActivityIndicatorView()
+        activityIndicator.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+        activityIndicator.activityIndicatorViewStyle = .Gray
+        activityIndicator.center = view.center
+        activityIndicator.hidden = false
+        activityIndicator.startAnimating()
+        view.addSubview(activityIndicator)
         
         //set user info
         let userInfo = UdacityClient.sharedInstance()
@@ -161,24 +163,20 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
         
         ParseClient.sharedInstance().postStudentLocation(studentLocation) { result, error in
             
+            activityIndicator.stopAnimating()
+            activityIndicator.hidden = true
+            
             if let error = error
             {
                 //make alert view show up with error from the Parse Client
-                dispatch_async(dispatch_get_main_queue(), {
-                    
-                    let failureString = error.userInfo![NSLocalizedDescriptionKey] as! String
-                    println("failure string from parse client: \(failureString)")
-                    
-                    let alert: UIAlertController = UIAlertController(title: "Udacity Posting Error", message: failureString, preferredStyle: .Alert)
-                    let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
-                    alert.addAction(okAction)
-                    
-                    self.presentViewController(alert, animated: true, completion: nil)
-                })
+                self.showAlertController("Udacity Posting Error", message: error.localizedDescription)
             }
             else
             {
                 println("Successfully posted user info!")
+                
+                //Zoom in on the map pin
+                self.mapView.setRegion(MKCoordinateRegionMakeWithDistance(CLLocationCoordinate2D(latitude: studentLocation.latitude!, longitude: studentLocation.longitude!), 5000, 5000), animated: true)
             }
         }
     }
@@ -288,14 +286,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
                 else
                 {
                     //if the url is not valid, show an alert view
-                    dispatch_async(dispatch_get_main_queue(), {
-                        
-                        let alert: UIAlertController = UIAlertController(title: "URL Lookup Failed", message: "The provided URL is not valid", preferredStyle: .Alert)
-                        let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
-                        alert.addAction(okAction)
-                        
-                        self.presentViewController(alert, animated: true, completion: nil)
-                    })
+                    showAlertController("URL Lookup Failed", message: "The provided URL is not valid.")
                 }
             }
         }
@@ -338,6 +329,20 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
         }
         
         return false
+    }
+    
+    func showAlertController(title: String, message: String)
+    {
+        dispatch_async(dispatch_get_main_queue(), {
+            
+            println("failure string from client: \(message)")
+            
+            let alert: UIAlertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+            let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
+            alert.addAction(okAction)
+            
+            self.presentViewController(alert, animated: true, completion: nil)
+        })
     }
 }
 
