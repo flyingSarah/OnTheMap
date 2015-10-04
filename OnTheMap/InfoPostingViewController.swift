@@ -16,6 +16,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
     @IBOutlet weak var locationTextField: UITextField!
     @IBOutlet weak var urlTextField: UITextField!
     @IBOutlet weak var findButton: UIButton!
+    @IBOutlet weak var browseButton: UIButton!
     @IBOutlet weak var submitButton: UIButton!
     @IBOutlet weak var mapView: MKMapView!
     
@@ -46,6 +47,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
         
         findButton.enabled = false
         submitButton.enabled = false
+        browseButton.enabled = false
         
         //initialize tap recognizer
         tapRecognizer = UITapGestureRecognizer(target: self, action: Selector("handleSingleTap:"))
@@ -79,8 +81,12 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
             self.mapView.addAnnotation(annotation)
             self.mapAnnotation = annotation
             
+            //Zoom in on the map pin
+            self.mapView.setRegion(MKCoordinateRegionMakeWithDistance(annotation.coordinate, 5000, 5000), animated: false)
+            
             submitButton.enabled = true
             findButton.enabled = true
+            browseButton.enabled = true
         }
         
         //add the tap recognizer
@@ -99,6 +105,15 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
     @IBAction func findLocation(sender: AnyObject)
     {
         dismissAnyVisibleKeyboards()
+        
+        //use an activity monitor for this action
+        var activityIndicator = UIActivityIndicatorView()
+        activityIndicator.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+        activityIndicator.activityIndicatorViewStyle = .Gray
+        activityIndicator.center = view.center
+        activityIndicator.hidden = false
+        activityIndicator.startAnimating()
+        view.addSubview(activityIndicator)
         
         CLGeocoder().geocodeAddressString(locationTextField.text, completionHandler: {(placemarks: [AnyObject]!, error: NSError!) -> Void in
             
@@ -119,24 +134,34 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
             }
             else
             {
-                println("Unknown error from geocoder")
+                self.showAlertController("Geocoder Error", message: "Unknown error from geocoder.")
             }
+            
+            activityIndicator.stopAnimating()
+            activityIndicator.hidden = true
         })
+    }
+    
+    @IBAction func browseURL(sender: AnyObject)
+    {
+        let urlString = urlTextField.text
+        
+        if(verifyURL(urlString))
+        {
+            //open the url if valid
+            UIApplication.sharedApplication().openURL(NSURL(string: urlString)!)
+        }
+        else
+        {
+            //if the url is not valid, show an alert view
+            showAlertController("URL Lookup Failed", message: "The provided URL is not valid.")
+        }
     }
     
     @IBAction func postInfo(sender: AnyObject)
     {
         dismissAnyVisibleKeyboards()
-        
-        //use an activity monitor for this action
-        var activityIndicator = UIActivityIndicatorView()
-        activityIndicator.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
-        activityIndicator.activityIndicatorViewStyle = .Gray
-        activityIndicator.center = view.center
-        activityIndicator.hidden = false
-        activityIndicator.startAnimating()
-        view.addSubview(activityIndicator)
-        
+    
         //set user info
         let userInfo = UdacityClient.sharedInstance()
         
@@ -163,9 +188,6 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
         
         ParseClient.sharedInstance().postStudentLocation(studentLocation) { result, error in
             
-            activityIndicator.stopAnimating()
-            activityIndicator.hidden = true
-            
             if let error = error
             {
                 //make alert view show up with error from the Parse Client
@@ -174,9 +196,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
             else
             {
                 println("Successfully posted user info!")
-                
-                //Zoom in on the map pin
-                self.mapView.setRegion(MKCoordinateRegionMakeWithDistance(CLLocationCoordinate2D(latitude: studentLocation.latitude!, longitude: studentLocation.longitude!), 5000, 5000), animated: true)
+                self.dismissViewControllerAnimated(true, completion: nil)
             }
         }
     }
@@ -188,6 +208,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
     
     @IBAction func textFieldChanged(sender: UITextField)
     {
+        //only enable the find button if the location text field isn't empty
         if(locationTextField.text.isEmpty)
         {
             findButton.enabled = false
@@ -197,22 +218,28 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
             findButton.enabled = true
         }
         
+        //only enable the browse button if the url text field isn't empty
+        if(urlTextField.text.isEmpty)
+        {
+            browseButton.enabled = false
+        }
+        else
+        {
+            browseButton.enabled = true
+        }
+        
+        //only enable the submit button if neither of the info text fields are empty and if the map has found a valid location
         if(urlTextField.text.isEmpty || locationTextField.text.isEmpty)
+        {
+            submitButton.enabled = false
+        }
+        else if(mapView.annotations.isEmpty)
         {
             submitButton.enabled = false
         }
         else
         {
-            //only enable the submit button if the map has found a valid location
-            if(mapView.annotations.isEmpty)
-            {
-                submitButton.enabled = false
-            }
-            else
-            {
-                submitButton.enabled = true
-            }
-            
+            submitButton.enabled = true
         }
     }
     
@@ -244,6 +271,9 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
             //add the annotation to the map view
             self.mapView.addAnnotation(annotation)
             self.mapAnnotation = annotation
+            
+            //Zoom in on the map pin
+            self.mapView.setRegion(MKCoordinateRegionMakeWithDistance(coordinates, 5000, 5000), animated: true)
         })
     }
     

@@ -69,7 +69,9 @@
                                 <state key="normal" title="Login">
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
-                                <state key="disabled" title="Enter Info"/>
+                                <state key="disabled" title="Enter Info to Login">
+                                    <color key="titleColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
                                 <connections>
                                     <action selector="loginToUdacity:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="Giq-wL-iRB"/>
                                 </connections>
@@ -88,17 +90,6 @@
                                     <action selector="signUpWithUdacity:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="s9e-08-iK5"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="45l-Ql-Q5f">
-                                <rect key="frame" x="16" y="562" width="568" height="30"/>
-                                <color key="backgroundColor" red="0.23137254901960785" green="0.34901960784313724" blue="0.59607843137254901" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="VdW-56-xHu"/>
-                                </constraints>
-                                <state key="normal" title="Sign in with Facebook">
-                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.6470588235294118" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -107,17 +98,13 @@
                             <constraint firstItem="waH-ER-1gj" firstAttribute="top" secondItem="jd2-0z-Y4r" secondAttribute="bottom" constant="8" id="9Ia-pg-VD8"/>
                             <constraint firstItem="wQz-Eo-jIJ" firstAttribute="trailing" secondItem="kh9-bI-dsS" secondAttribute="trailingMargin" id="9jP-qS-3Ch"/>
                             <constraint firstAttribute="centerX" secondItem="wQz-Eo-jIJ" secondAttribute="centerX" id="Jm3-N4-niG"/>
-                            <constraint firstAttribute="centerX" secondItem="45l-Ql-Q5f" secondAttribute="centerX" id="SlN-0U-5ge"/>
-                            <constraint firstItem="45l-Ql-Q5f" firstAttribute="trailing" secondItem="kh9-bI-dsS" secondAttribute="trailingMargin" id="Veu-yt-al6"/>
                             <constraint firstItem="jd2-0z-Y4r" firstAttribute="top" secondItem="1Gj-Yl-NNG" secondAttribute="bottom" constant="8" id="Vsf-0y-LRm"/>
-                            <constraint firstItem="45l-Ql-Q5f" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" id="Xem-5t-lrB"/>
                             <constraint firstItem="1Gj-Yl-NNG" firstAttribute="trailing" secondItem="kh9-bI-dsS" secondAttribute="trailingMargin" id="aWA-Ua-EEm"/>
                             <constraint firstItem="1Gj-Yl-NNG" firstAttribute="top" secondItem="wQz-Eo-jIJ" secondAttribute="bottom" constant="8" id="bLl-AY-Kpd"/>
                             <constraint firstAttribute="centerX" secondItem="waH-ER-1gj" secondAttribute="centerX" id="f3Z-HA-8et"/>
                             <constraint firstAttribute="centerX" secondItem="1Gj-Yl-NNG" secondAttribute="centerX" id="g5F-DD-tKd"/>
                             <constraint firstItem="1Gj-Yl-NNG" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" id="mlT-ts-TTn"/>
                             <constraint firstItem="jd2-0z-Y4r" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" id="nSg-rq-Umk"/>
-                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="45l-Ql-Q5f" secondAttribute="bottom" constant="8" id="nW5-zv-LJg"/>
                             <constraint firstAttribute="centerX" secondItem="iFk-7c-1i9" secondAttribute="centerX" constant="-0.5" id="oVs-1r-z8z"/>
                             <constraint firstItem="iFk-7c-1i9" firstAttribute="top" secondItem="9IB-5h-Uum" secondAttribute="bottom" constant="8" id="rAJ-Pp-RWt"/>
                             <constraint firstItem="wQz-Eo-jIJ" firstAttribute="top" secondItem="iFk-7c-1i9" secondAttribute="bottom" constant="16" id="uVi-i6-4UZ"/>
@@ -310,7 +297,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Enter Location" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="DiU-dL-CpU">
-                                <rect key="frame" x="0.0" y="101" width="468" height="30"/>
+                                <rect key="frame" x="0.0" y="101" width="500" height="30"/>
                                 <color key="backgroundColor" red="0.80874346070000003" green="0.80874346070000003" blue="0.80874346070000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="diR-QB-5T1"/>
@@ -322,18 +309,18 @@
                                 </connections>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aWu-Ha-Lho">
-                                <rect key="frame" x="471" y="101" width="128" height="30"/>
+                                <rect key="frame" x="502" y="101" width="97" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="Bze-4l-bDg"/>
-                                    <constraint firstAttribute="width" constant="128" id="NRU-LC-xUT"/>
+                                    <constraint firstAttribute="width" constant="97" id="Ry3-ve-kK4"/>
                                 </constraints>
-                                <state key="normal" title="Find on the Map"/>
+                                <state key="normal" title="Find on Map"/>
                                 <connections>
                                     <action selector="findLocation:" destination="61m-41-s0E" eventType="touchUpInside" id="PyZ-bM-3hy"/>
                                 </connections>
                             </button>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Enter a URL to share" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="esI-oV-y30">
-                                <rect key="frame" x="0.0" y="135" width="600" height="30"/>
+                                <rect key="frame" x="0.0" y="135" width="500" height="30"/>
                                 <color key="backgroundColor" red="0.80874346070000003" green="0.80874346070000003" blue="0.80874346070000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="DQC-8T-u8b"/>
@@ -344,6 +331,19 @@
                                     <action selector="textFieldChanged:" destination="61m-41-s0E" eventType="editingChanged" id="rYc-Xc-5I7"/>
                                 </connections>
                             </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xA7-Ij-JMb">
+                                <rect key="frame" x="502" y="134" width="97" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="97" id="KCd-yN-Xvg"/>
+                                    <constraint firstAttribute="height" constant="30" id="XPY-as-dUJ"/>
+                                </constraints>
+                                <state key="normal" title="Browse">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="browseURL:" destination="61m-41-s0E" eventType="touchUpInside" id="2ce-ay-wsP"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.80874346065454539" green="0.80874346065454539" blue="0.80874346065454539" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -351,25 +351,28 @@
                             <constraint firstItem="vBh-y2-aHy" firstAttribute="leading" secondItem="cQW-RZ-OW9" secondAttribute="leadingMargin" constant="-16" id="5ze-k7-rmU"/>
                             <constraint firstItem="tv3-wq-xdv" firstAttribute="top" secondItem="esI-oV-y30" secondAttribute="bottom" constant="-2" id="DkO-zc-aut"/>
                             <constraint firstItem="esI-oV-y30" firstAttribute="top" secondItem="DiU-dL-CpU" secondAttribute="bottom" constant="4" id="FsU-Xv-X9I"/>
-                            <constraint firstItem="aWu-Ha-Lho" firstAttribute="leading" secondItem="DiU-dL-CpU" secondAttribute="trailing" constant="3" id="KGM-YV-PDP"/>
+                            <constraint firstItem="aWu-Ha-Lho" firstAttribute="leading" secondItem="DiU-dL-CpU" secondAttribute="trailing" constant="2" id="Liy-jm-hMq"/>
                             <constraint firstItem="tv3-wq-xdv" firstAttribute="leading" secondItem="cQW-RZ-OW9" secondAttribute="leadingMargin" constant="-16" id="Oq0-kS-moc"/>
                             <constraint firstItem="0gU-mH-qtt" firstAttribute="top" secondItem="vBh-y2-aHy" secondAttribute="bottom" id="Q16-Iq-COG"/>
                             <constraint firstItem="ReH-jf-Srf" firstAttribute="leading" secondItem="cQW-RZ-OW9" secondAttribute="leadingMargin" constant="54" id="QxI-03-HYG"/>
                             <constraint firstItem="Ks0-Ha-dBA" firstAttribute="top" secondItem="ISp-z9-bFA" secondAttribute="bottom" id="Tsk-4o-tp3"/>
                             <constraint firstItem="esI-oV-y30" firstAttribute="leading" secondItem="cQW-RZ-OW9" secondAttribute="leadingMargin" constant="-16" id="WaA-C6-K5a"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="xA7-Ij-JMb" secondAttribute="trailing" constant="-15" id="WkP-nl-qyT"/>
+                            <constraint firstItem="xA7-Ij-JMb" firstAttribute="leading" secondItem="esI-oV-y30" secondAttribute="trailing" constant="2" id="XCd-F1-EBZ"/>
                             <constraint firstItem="aWu-Ha-Lho" firstAttribute="top" secondItem="ReH-jf-Srf" secondAttribute="bottom" constant="4" id="Xex-yi-jjO"/>
                             <constraint firstAttribute="trailingMargin" secondItem="vBh-y2-aHy" secondAttribute="trailing" constant="-16" id="YXL-XZ-gow"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="aWu-Ha-Lho" secondAttribute="trailing" constant="-15" id="ZoM-7G-Ua4"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="aWu-Ha-Lho" secondAttribute="trailing" constant="-15" id="ZFW-u9-aqa"/>
                             <constraint firstItem="DiU-dL-CpU" firstAttribute="leading" secondItem="cQW-RZ-OW9" secondAttribute="leadingMargin" constant="-16" id="enQ-A8-Cfn"/>
                             <constraint firstItem="vBh-y2-aHy" firstAttribute="top" secondItem="tv3-wq-xdv" secondAttribute="bottom" constant="-2" id="fxG-qO-FAr"/>
+                            <constraint firstItem="xA7-Ij-JMb" firstAttribute="top" secondItem="aWu-Ha-Lho" secondAttribute="bottom" constant="3" id="gI5-2z-EdX"/>
                             <constraint firstAttribute="centerX" secondItem="ReH-jf-Srf" secondAttribute="centerX" id="gTt-2I-pRC"/>
                             <constraint firstItem="DiU-dL-CpU" firstAttribute="top" secondItem="ReH-jf-Srf" secondAttribute="bottom" constant="4" id="gmV-75-eUt"/>
                             <constraint firstAttribute="trailingMargin" secondItem="tv3-wq-xdv" secondAttribute="trailing" constant="-16" id="hSL-xx-kAN"/>
                             <constraint firstItem="ReH-jf-Srf" firstAttribute="top" secondItem="ISp-z9-bFA" secondAttribute="bottom" constant="8" id="lpV-cf-Q9V"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="esI-oV-y30" secondAttribute="trailing" constant="-16" id="yLR-Lf-4jz"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="browseButton" destination="xA7-Ij-JMb" id="GYB-sC-vGt"/>
                         <outlet property="findButton" destination="aWu-Ha-Lho" id="B50-9K-D6L"/>
                         <outlet property="locationTextField" destination="DiU-dL-CpU" id="t3Q-8T-uHc"/>
                         <outlet property="mapView" destination="tv3-wq-xdv" id="Nte-VI-PNm"/>

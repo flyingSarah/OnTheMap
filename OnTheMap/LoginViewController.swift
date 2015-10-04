@@ -75,6 +75,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         
         //remove the tap recognizer
         removeKeyboardDismissRecognizer()
+        
+        emailTextField.text = ""
+        passwordTextField.text = ""
+        loginButton.enabled = false
     }
     
     //MARK --- Actions
@@ -90,9 +94,17 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                 println("Login failed: \(message)")
                 
                 //get the description of the specific error that results from the failed request
-                let failureString = error.userInfo![NSLocalizedDescriptionKey] as! String
+                let failureString = error.localizedDescription
                 
-                self.displayError("\(failureString)")
+                //if the error string contains the word server, it's a server error not a password error
+                if(failureString.rangeOfString("server") != nil)
+                {
+                    self.displayError("\(failureString)")
+                }
+                else
+                {
+                    self.shakeView()
+                }
             }
             else
             {
@@ -119,6 +131,21 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         })
     }
     
+    func shakeView()
+    {
+        dispatch_async(dispatch_get_main_queue(), {
+            
+            //learned how to make a shake animation from this website: http://stackoverflow.com/questions/27987048/shake-animation-for-uitextfield-uiview-in-swift
+            let animation = CABasicAnimation(keyPath: "position")
+            animation.duration = 0.07
+            animation.repeatCount = 4
+            animation.autoreverses = true
+            animation.fromValue = NSValue(CGPoint: CGPointMake(self.view.center.x - 5, self.view.center.y))
+            animation.toValue = NSValue(CGPoint: CGPointMake(self.view.center.x + 5, self.view.center.y))
+            self.view.layer.addAnimation(animation, forKey: "position")
+        })
+    }
+    
     func displayError(errorString: String?)
     {
         UdacityClient.sharedInstance().loginError = errorString
@@ -130,7 +157,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
             alert.addAction(okAction)
             
-            self.showViewController(alert, sender: true)
+            self.presentViewController(alert, animated: true, completion: nil)
         })
     }
     
