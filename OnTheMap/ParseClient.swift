@@ -43,7 +43,7 @@ class ParseClient : NSObject {
             }
             else
             {
-                ParseClient.parseJSONWithCompletionHandler(data, completionHandler: completionHandler)
+                ParseClient.parseJSONWithCompletionHandler(data!, completionHandler: completionHandler)
             }
         }
         
@@ -65,7 +65,12 @@ class ParseClient : NSObject {
         request.addValue(Constants.ParseAppID, forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue(Constants.RestAPIKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.HTTPBody = NSJSONSerialization.dataWithJSONObject(jsonBody, options: nil, error: &jsonifyError)
+        do {
+            request.HTTPBody = try NSJSONSerialization.dataWithJSONObject(jsonBody, options: [])
+        } catch let error as NSError {
+            jsonifyError = error
+            request.HTTPBody = nil
+        }
         
         //make the request
         let task = session.dataTaskWithRequest(request) { data, response, downloadError in
@@ -78,7 +83,7 @@ class ParseClient : NSObject {
             }
             else
             {
-                ParseClient.parseJSONWithCompletionHandler(data, completionHandler: completionHandler)
+                ParseClient.parseJSONWithCompletionHandler(data!, completionHandler: completionHandler)
             }
         }
         
@@ -101,7 +106,12 @@ class ParseClient : NSObject {
         request.addValue(Constants.ParseAppID, forHTTPHeaderField: "X-Parse-Application-Id")
         request.addValue(Constants.RestAPIKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.HTTPBody = NSJSONSerialization.dataWithJSONObject(jsonBody, options: nil, error: &jsonifyError)
+        do {
+            request.HTTPBody = try NSJSONSerialization.dataWithJSONObject(jsonBody, options: [])
+        } catch let error as NSError {
+            jsonifyError = error
+            request.HTTPBody = nil
+        }
         
         //make the request
         let task = session.dataTaskWithRequest(request) { data, response, downloadError in
@@ -114,7 +124,7 @@ class ParseClient : NSObject {
             }
             else
             {
-                ParseClient.parseJSONWithCompletionHandler(data, completionHandler: completionHandler)
+                ParseClient.parseJSONWithCompletionHandler(data!, completionHandler: completionHandler)
             }
         }
         
@@ -128,7 +138,7 @@ class ParseClient : NSObject {
     //given a response with error, see if a status_message is returned, otherwise return the previous error
     class func errorForData(data: NSData?, response: NSURLResponse?, error: NSError?) -> NSError
     {
-        if let parsedResult = NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments, error: nil) as? [String : AnyObject]
+        if let parsedResult = (try? NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments)) as? [String : AnyObject]
         {
             if let errorMessage = parsedResult[ParseClient.JSONResponseKeys.StatusMessage] as? String
             {
@@ -151,7 +161,13 @@ class ParseClient : NSObject {
     {
         var parsingError: NSError? = nil
         
-        let parsedResult: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: &parsingError)
+        let parsedResult: AnyObject?
+        do {
+            parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments)
+        } catch let error as NSError {
+            parsingError = error
+            parsedResult = nil
+        }
         
         if let error = parsingError
         {
@@ -175,8 +191,8 @@ class ParseClient : NSObject {
     //given a dictionary of parameters, convert to a string for a url
     class func escapedParameters(parameters: [String : AnyObject]) -> String
     {
-        var queryItems = map(parameters) { NSURLQueryItem(name: $0, value: $1 as! String) }
-        var components = NSURLComponents()
+        let queryItems = parameters.map { NSURLQueryItem(name: $0, value: $1 as? String) }
+        let components = NSURLComponents()
         
         components.queryItems = queryItems
         return components.percentEncodedQuery ?? ""

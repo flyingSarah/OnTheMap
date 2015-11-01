@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TableViewController : UITableViewController, UITableViewDelegate {
+class TableViewController : UITableViewController {
     
     //MARK --- Outlets
     @IBOutlet var studentLocationTable: UITableView!
@@ -27,12 +27,12 @@ class TableViewController : UITableViewController, UITableViewDelegate {
         //create the needed bar button items
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("logout:"))
         
-        var refreshButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: Selector("refreshButtonClicked:"))
+        let refreshButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: Selector("refreshButtonClicked:"))
         
-        var pinImage: UIImage = UIImage(named: "pin")!
-        var pinButton: UIBarButtonItem = UIBarButtonItem(image: pinImage, style: UIBarButtonItemStyle.Plain, target: self, action: Selector("addPin:"))
+        let pinImage: UIImage = UIImage(named: "pin")!
+        let pinButton: UIBarButtonItem = UIBarButtonItem(image: pinImage, style: UIBarButtonItemStyle.Plain, target: self, action: Selector("addPin:"))
         
-        var buttons = [refreshButton, pinButton]
+        let buttons = [refreshButton, pinButton]
         
         navigationItem.rightBarButtonItems = buttons
         
@@ -64,7 +64,7 @@ class TableViewController : UITableViewController, UITableViewDelegate {
             }
             else
             {
-                println("Successfully logged out of Udacity session")
+                print("Successfully logged out of Udacity session")
                 
                 self.dismissViewControllerAnimated(true, completion: nil)
             }
@@ -74,7 +74,7 @@ class TableViewController : UITableViewController, UITableViewDelegate {
     func addPin(sender: AnyObject)
     {
         //Grab the information posting VC from Storyboard
-        let object:AnyObject = storyboard!.instantiateViewControllerWithIdentifier("InfoPostingViewController")!
+        let object:AnyObject = storyboard!.instantiateViewControllerWithIdentifier("InfoPostingViewController")
         
         let addPinVC = object as! InfoPostingViewController
         
@@ -100,7 +100,7 @@ class TableViewController : UITableViewController, UITableViewDelegate {
             }
             else
             {
-                println("Successfully got student info!")
+                print("Successfully got student info!")
                 
                 ParseClient.sharedInstance().studentLocations = result!
                 self.locationSet = true
@@ -117,7 +117,7 @@ class TableViewController : UITableViewController, UITableViewDelegate {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
         let student = ParseClient.sharedInstance().studentLocations[indexPath.row]
-        let cell = tableView.dequeueReusableCellWithIdentifier("studentCell", forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("studentCell", forIndexPath: indexPath) 
         
         cell.textLabel!.text = "\(student.firstName) \(student.lastName)"
         
@@ -145,12 +145,12 @@ class TableViewController : UITableViewController, UITableViewDelegate {
             if(verifyURL(urlString))
             {
                 //open the url if valid
-                println("open url: \(urlString)")
+                print("open url: \(urlString)")
                 UIApplication.sharedApplication().openURL(NSURL(string: urlString)!)
             }
             else
             {
-                println("invalid url: \(urlString)")
+                print("invalid url: \(urlString)")
                 //if the url is not valid, show an alert view
                 showAlertController("URL Lookup Failed", message: "The provided URL is not valid.")
             }
@@ -177,7 +177,7 @@ class TableViewController : UITableViewController, UITableViewDelegate {
     {
         dispatch_async(dispatch_get_main_queue(), {
             
-            println("failure string from client: \(message)")
+            print("failure string from client: \(message)")
             
             let alert: UIAlertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
             let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)

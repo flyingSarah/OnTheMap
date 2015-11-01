@@ -51,7 +51,7 @@ class UdacityClient : NSObject {
             }
             else
             {
-                let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) // subset response data
+                let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) // subset response data
                 UdacityClient.parseJSONWithCompletionHandler(newData, completionHandler: completionHandler)
             }
         }
@@ -74,7 +74,12 @@ class UdacityClient : NSObject {
         request.HTTPMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.HTTPBody = NSJSONSerialization.dataWithJSONObject(jsonBody, options: nil, error: &jsonifyError)
+        do {
+            request.HTTPBody = try NSJSONSerialization.dataWithJSONObject(jsonBody, options: [])
+        } catch let error as NSError {
+            jsonifyError = error
+            request.HTTPBody = nil
+        }
         
         //make the request
         let task = session.dataTaskWithRequest(request) { data, response, downloadError in
@@ -87,7 +92,7 @@ class UdacityClient : NSObject {
             }
             else
             {
-                let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) //subset response data
+                let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) //subset response data
                 UdacityClient.parseJSONWithCompletionHandler(newData, completionHandler: completionHandler)
             }
         }
@@ -107,7 +112,7 @@ class UdacityClient : NSObject {
         var xsrfCookie: NSHTTPCookie? = nil
         request.HTTPMethod = "DELETE"
         let sharedCookieStorage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
-        for cookie in sharedCookieStorage.cookies as! [NSHTTPCookie]
+        for cookie in sharedCookieStorage.cookies! as [NSHTTPCookie]
         {
             if(cookie.name == "XSRF-TOKEN")
             {
@@ -116,7 +121,7 @@ class UdacityClient : NSObject {
         }
         if let xsrfCookie = xsrfCookie
         {
-            request.setValue(xsrfCookie.value!, forHTTPHeaderField: "X-XSRF-TOKEN")
+            request.setValue(xsrfCookie.value, forHTTPHeaderField: "X-XSRF-TOKEN")
         }
         
         //make the request
@@ -130,7 +135,7 @@ class UdacityClient : NSObject {
             }
             else
             {
-                let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) //subset response data
+                let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) //subset response data
                 UdacityClient.parseJSONWithCompletionHandler(newData, completionHandler: completionHandler)
             }
         }
@@ -155,7 +160,7 @@ class UdacityClient : NSObject {
     //Given a response with error, see if a status_message is returned, otherwise return the previous error
     class func errorForData(data: NSData?, response: NSURLResponse?, error: NSError) -> NSError
     {
-        if let parsedResult = NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments, error: nil) as? [String : AnyObject]
+        if let parsedResult = (try? NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments)) as? [String : AnyObject]
         {
             if let errorMessage = parsedResult[UdacityClient.JSONResponseKeys.StatusMessage] as? String
             {
@@ -178,7 +183,13 @@ class UdacityClient : NSObject {
     {
         var parsingError: NSError? = nil
         
-        let parsedResult: AnyObject? = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: &parsingError)
+        let parsedResult: AnyObject?
+        do {
+            parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments)
+        } catch let error as NSError {
+            parsingError = error
+            parsedResult = nil
+        }
         
         if let error = parsingError
         {

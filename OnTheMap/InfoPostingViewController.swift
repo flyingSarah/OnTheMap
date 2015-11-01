@@ -58,7 +58,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
     {
         super.viewWillAppear(animated)
         
-        var userInfo = UdacityClient.sharedInstance()
+        let userInfo = UdacityClient.sharedInstance()
         
         //If the user has already posted, show the data associated with the user
         if(userInfo.mediaURL != nil)
@@ -71,7 +71,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
             self.mapAnnotation = nil
             
             //construct annotation
-            var annotation = MKPointAnnotation()
+            let annotation = MKPointAnnotation()
             let coordinates = CLLocationCoordinate2D(latitude: userInfo.latitude!, longitude: userInfo.longitude!)
             annotation.coordinate = coordinates
             annotation.title = "\(userInfo.firstName!) \(userInfo.lastName!)"
@@ -107,7 +107,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
         dismissAnyVisibleKeyboards()
         
         //use an activity monitor for this action
-        var activityIndicator = UIActivityIndicatorView()
+        let activityIndicator = UIActivityIndicatorView()
         activityIndicator.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
         activityIndicator.activityIndicatorViewStyle = .Gray
         activityIndicator.center = view.center
@@ -115,20 +115,20 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
         activityIndicator.startAnimating()
         view.addSubview(activityIndicator)
         
-        CLGeocoder().geocodeAddressString(locationTextField.text, completionHandler: {(placemarks: [AnyObject]!, error: NSError!) -> Void in
-            
+        CLGeocoder().geocodeAddressString(locationTextField.text!, completionHandler: {(placemarks: [CLPlacemark]?, error: NSError?) -> Void in
+        
             if error != nil
             {
                 //show alert view when geocoding the address fails
-                self.showAlertController("Geocoder Error", message: error.localizedDescription)
+                self.showAlertController("Geocoder Error", message: error!.localizedDescription)
                 
                 return
             }
             
-            if let placemark = placemarks?[0] as? CLPlacemark
+            if let placemark = placemarks?[0] as CLPlacemark!
             {
-                self.latitude = placemark.location.coordinate.latitude
-                self.longitude = placemark.location.coordinate.longitude
+                self.latitude = placemark.location!.coordinate.latitude
+                self.longitude = placemark.location!.coordinate.longitude
                 
                 self.setPinOnMap()
             }
@@ -149,7 +149,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
         if(verifyURL(urlString))
         {
             //open the url if valid
-            UIApplication.sharedApplication().openURL(NSURL(string: urlString)!)
+            UIApplication.sharedApplication().openURL(NSURL(string: urlString!)!)
         }
         else
         {
@@ -195,7 +195,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
             }
             else
             {
-                println("Successfully posted user info!")
+                print("Successfully posted user info!")
                 self.dismissViewControllerAnimated(true, completion: nil)
             }
         }
@@ -209,7 +209,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
     @IBAction func textFieldChanged(sender: UITextField)
     {
         //only enable the find button if the location text field isn't empty
-        if(locationTextField.text.isEmpty)
+        if(locationTextField.text!.isEmpty)
         {
             findButton.enabled = false
         }
@@ -219,7 +219,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
         }
         
         //only enable the browse button if the url text field isn't empty
-        if(urlTextField.text.isEmpty)
+        if(urlTextField.text!.isEmpty)
         {
             browseButton.enabled = false
         }
@@ -229,7 +229,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
         }
         
         //only enable the submit button if neither of the info text fields are empty and if the map has found a valid location
-        if(urlTextField.text.isEmpty || locationTextField.text.isEmpty)
+        if(urlTextField.text!.isEmpty || locationTextField.text!.isEmpty)
         {
             submitButton.enabled = false
         }
@@ -252,7 +252,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
             self.mapView.removeAnnotations(self.mapView.annotations)
             self.mapAnnotation = nil
             
-            var annotation = MKPointAnnotation()
+            let annotation = MKPointAnnotation()
             
             //get the needed data for the user
             let userInfo = UdacityClient.sharedInstance()
@@ -278,7 +278,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
     }
     
     //MARK --- MKMapViewDelegate functions that allow you to click on URLs in the pin veiw on the map
-    func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView!
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView?
     {
         let reuseID = "pin"
         
@@ -290,7 +290,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
             pinView!.canShowCallout = true
             let thisTitle = annotation.title!
             pinView!.pinColor = .Red
-            pinView!.rightCalloutAccessoryView = UIButton.buttonWithType(.DetailDisclosure) as! UIButton
+            pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
         }
         else
         {
@@ -300,18 +300,18 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
         return pinView
     }
     
-    func mapView(mapView: MKMapView!, annotationView: MKAnnotationView!, calloutAccessoryControlTapped control: UIControl!)
+    func mapView(mapView: MKMapView, annotationView: MKAnnotationView, calloutAccessoryControlTapped control: UIControl)
     {
-        if(annotationView.annotation.subtitle != "You have not entered a URL")
+        if(annotationView.annotation!.subtitle! != "You have not entered a URL")
         {
             if(control == annotationView.rightCalloutAccessoryView)
             {
-                let urlString = annotationView.annotation.subtitle!
+                let urlString = annotationView.annotation!.subtitle!
                 
                 if(verifyURL(urlString))
                 {
                     //open the url if valid
-                    UIApplication.sharedApplication().openURL(NSURL(string: urlString)!)
+                    UIApplication.sharedApplication().openURL(NSURL(string: urlString!)!)
                 }
                 else
                 {
@@ -365,7 +365,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
     {
         dispatch_async(dispatch_get_main_queue(), {
             
-            println("failure string from client: \(message)")
+            print("failure string from client: \(message)")
             
             let alert: UIAlertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
             let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)

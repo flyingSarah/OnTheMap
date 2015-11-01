@@ -33,12 +33,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         //create the needed bar button items - I referenced this website http://stackoverflow.com/questions/30341263/how-to-add-two-multiple-uibarbuttonitems-on-right-side-of-navigation-bar
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("logout:"))
         
-        var refreshButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: Selector("refreshButtonClicked:"))
+        let refreshButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: Selector("refreshButtonClicked:"))
         
-        var pinImage: UIImage = UIImage(named: "pin")!
-        var pinButton: UIBarButtonItem = UIBarButtonItem(image: pinImage,  style: UIBarButtonItemStyle.Plain, target: self, action: Selector("addPin:"))
+        let pinImage: UIImage = UIImage(named: "pin")!
+        let pinButton: UIBarButtonItem = UIBarButtonItem(image: pinImage,  style: UIBarButtonItemStyle.Plain, target: self, action: Selector("addPin:"))
         
-        var buttons = [refreshButton, pinButton]
+        let buttons = [refreshButton, pinButton]
         
         navigationItem.rightBarButtonItems = buttons
         
@@ -70,7 +70,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             }
             else
             {
-                println("Successfully logged out of Udacity session")
+                print("Successfully logged out of Udacity session")
                 
                 self.dismissViewControllerAnimated(true, completion: nil)
             }
@@ -80,7 +80,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     func addPin(sender: AnyObject)
     {
         //Grab the information posting VC from Storyboard
-        let object:AnyObject = storyboard!.instantiateViewControllerWithIdentifier("InfoPostingViewController")!
+        let object:AnyObject = storyboard!.instantiateViewControllerWithIdentifier("InfoPostingViewController")
         
         let addPinVC = object as! InfoPostingViewController
         
@@ -106,7 +106,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             }
             else
             {
-                println("Successfully got student info!")
+                print("Successfully got student info!")
                 
                 ParseClient.sharedInstance().studentLocations = result!
                 self.locationsSet = true
@@ -143,10 +143,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 let latitude = CLLocationDegrees(student.latitude!)
                 let longitude = CLLocationDegrees(student.longitude!)
                 let coordinates = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-                let uniqueKey = student.uniqueKey
+                _ = student.uniqueKey
                 
                 //construct an anotation
-                var annotation = MKPointAnnotation()
+                let annotation = MKPointAnnotation()
                 annotation.coordinate = coordinates
                 annotation.title = "\(firstName) \(lastName)"
                 annotation.subtitle = mediaURL
@@ -162,7 +162,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     //MARK -- MKMapViewDelegate functions that allow you to click on URLs in the pin views on the map
     
-    func mapView(mapView: MKMapView!, viewForAnnotation annotation: MKAnnotation!) -> MKAnnotationView!
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView?
     {
         let reuseID = "pin"
         
@@ -174,7 +174,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             pinView!.canShowCallout = true
             let thisTitle = annotation.title!
             pinView!.pinColor = .Red
-            pinView!.rightCalloutAccessoryView = UIButton.buttonWithType(.DetailDisclosure) as! UIButton
+            pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
         }
         else
         {
@@ -184,18 +184,18 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         return pinView
     }
     
-    func mapView(mapView: MKMapView!, annotationView: MKAnnotationView!, calloutAccessoryControlTapped control: UIControl!)
+    func mapView(mapView: MKMapView, annotationView: MKAnnotationView, calloutAccessoryControlTapped control: UIControl)
     {
-        if(annotationView.annotation.subtitle != emptyURLSubtitleText)
+        if(annotationView.annotation!.subtitle! != emptyURLSubtitleText)
         {
             if(control == annotationView.rightCalloutAccessoryView)
             {
-                let urlString = annotationView.annotation.subtitle!
+                let urlString = annotationView.annotation!.subtitle!
                 
                 if(verifyURL(urlString))
                 {
                     //open the url if valid
-                    UIApplication.sharedApplication().openURL(NSURL(string: urlString)!)
+                    UIApplication.sharedApplication().openURL(NSURL(string: urlString!)!)
                 }
                 else
                 {
@@ -226,7 +226,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     {
         dispatch_async(dispatch_get_main_queue(), {
             
-            println("failure string from client: \(message)")
+            print("failure string from client: \(message)")
             
             let alert: UIAlertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
             let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)

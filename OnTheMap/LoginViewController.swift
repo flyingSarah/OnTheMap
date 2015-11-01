@@ -47,10 +47,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         
         //add a little left indent/padding on the text fields
         //Found how to do this from this stackoverflow topic: http://stackoverflow.com/questions/7565645/indent-the-text-in-a-uitextfield
-        var emailSpacerView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
+        let emailSpacerView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
         emailTextField.leftViewMode = UITextFieldViewMode.Always
         emailTextField.leftView = emailSpacerView
-        var passwordSpacerView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
+        let passwordSpacerView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
         passwordTextField.leftViewMode = UITextFieldViewMode.Always
         passwordTextField.leftView = passwordSpacerView
         
@@ -87,11 +87,11 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     {
         dismissAnyVisibleKeyboards()
         
-        UdacityClient.sharedInstance().createSession(emailTextField.text, password: passwordTextField.text) { message, error in
+        UdacityClient.sharedInstance().createSession(emailTextField.text!, password: passwordTextField.text!) { message, error in
             
             if let error = error
             {
-                println("Login failed: \(message)")
+                print("Login failed: \(message)")
                 
                 //get the description of the specific error that results from the failed request
                 let failureString = error.localizedDescription
@@ -108,7 +108,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             }
             else
             {
-                println("login complete! \(message)")
+                print("login complete! \(message)")
                 self.completeLogin()
             }
         }
@@ -163,7 +163,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func textFieldChanged(sender: UITextField)
     {
-        if(emailTextField.text.isEmpty || passwordTextField.text.isEmpty)
+        if(emailTextField.text!.isEmpty || passwordTextField.text!.isEmpty)
         {
             loginButton.enabled = false
         }

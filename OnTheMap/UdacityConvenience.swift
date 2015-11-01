@@ -14,7 +14,7 @@ extension UdacityClient {
     func createSession(username: String, password: String, completionHandler: (message: String, error: NSError?) -> Void)
     {
         //Specify method and HTTP body
-        var method: String = UdacityClient.Methods.AccountLogIn
+        let method: String = UdacityClient.Methods.AccountLogIn
         
         let jsonBody: [String : AnyObject] = [
             "udacity" : [
@@ -62,7 +62,7 @@ extension UdacityClient {
     func logoutOfSession(completionHandler: (message: String, error: NSError?) -> Void)
     {
         //specify method
-        var method: String = UdacityClient.Methods.AccountLogIn
+        let method: String = UdacityClient.Methods.AccountLogIn
         
         //make the request
         taskForDeleteMethod(method) { JSONResult, error in
@@ -93,7 +93,7 @@ extension UdacityClient {
     func getPublicUserData(userID: String, completionHandler: (message: String, error: NSError?) -> Void)
     {
         //Specify method
-        var method: String = UdacityClient.Methods.AccountUserData + userID
+        let method: String = UdacityClient.Methods.AccountUserData + userID
         
         taskForGetMethod(method) { JSONResult, error in
             
