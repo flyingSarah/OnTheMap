@@ -31,12 +31,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         mapView.delegate = self
         
         //create the needed bar button items - I referenced this website http://stackoverflow.com/questions/30341263/how-to-add-two-multiple-uibarbuttonitems-on-right-side-of-navigation-bar
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("logout:"))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: UIBarButtonItemStyle.plain, target: self, action: #selector(MapViewController.logout(_:)))
         
-        let refreshButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: Selector("refreshButtonClicked:"))
+        let refreshButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.refresh, target: self, action: #selector(MapViewController.refreshButtonClicked(_:)))
         
         let pinImage: UIImage = UIImage(named: "pin")!
-        let pinButton: UIBarButtonItem = UIBarButtonItem(image: pinImage,  style: UIBarButtonItemStyle.Plain, target: self, action: Selector("addPin:"))
+        let pinButton: UIBarButtonItem = UIBarButtonItem(image: pinImage,  style: UIBarButtonItemStyle.plain, target: self, action: #selector(MapViewController.addPin(_:)))
         
         let buttons = [refreshButton, pinButton]
         
@@ -46,7 +46,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         setLocations()
     }
     
-    override func viewWillAppear(animated: Bool)
+    override func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(animated)
         
@@ -59,7 +59,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     //MARK --- Tab Bar Buttons
     
-    func logout(sender: AnyObject)
+    @objc func logout(_ sender: AnyObject)
     {
         UdacityClient.sharedInstance().logoutOfSession() { result, error in
             
@@ -72,23 +72,23 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             {
                 print("Successfully logged out of Udacity session")
                 
-                self.dismissViewControllerAnimated(true, completion: nil)
+                self.dismiss(animated: true, completion: nil)
             }
         }
     }
     
-    func addPin(sender: AnyObject)
+    @objc func addPin(_ sender: AnyObject)
     {
         //Grab the information posting VC from Storyboard
-        let object:AnyObject = storyboard!.instantiateViewControllerWithIdentifier("InfoPostingViewController")
+        let object:AnyObject = storyboard!.instantiateViewController(withIdentifier: "InfoPostingViewController")
         
         let addPinVC = object as! InfoPostingViewController
         
         //Present the view controller
-        presentViewController(addPinVC, animated: true, completion: nil)
+        present(addPinVC, animated: true, completion: nil)
     }
     
-    func refreshButtonClicked(sender: AnyObject)
+    @objc func refreshButtonClicked(_ sender: AnyObject)
     {
         setLocations()
     }
@@ -117,7 +117,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     func setPinsOnMap()
     {
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             
             //first remove annootations currently showing on the map view
             self.mapView.removeAnnotations(self.mapView.annotations)
@@ -162,19 +162,19 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     //MARK -- MKMapViewDelegate functions that allow you to click on URLs in the pin views on the map
     
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView?
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView?
     {
         let reuseID = "pin"
         
-        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseID) as? MKPinAnnotationView
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseID) as? MKPinAnnotationView
         
         if(pinView == nil)
         {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseID)
             pinView!.canShowCallout = true
             let thisTitle = annotation.title!
-            pinView!.pinColor = .Red
-            pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
+            pinView!.pinColor = .red
+            pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
         }
         else
         {
@@ -184,7 +184,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         return pinView
     }
     
-    func mapView(mapView: MKMapView, annotationView: MKAnnotationView, calloutAccessoryControlTapped control: UIControl)
+    func mapView(_ mapView: MKMapView, annotationView: MKAnnotationView, calloutAccessoryControlTapped control: UIControl)
     {
         if(annotationView.annotation!.subtitle! != emptyURLSubtitleText)
         {
@@ -195,7 +195,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                 if(verifyURL(urlString))
                 {
                     //open the url if valid
-                    UIApplication.sharedApplication().openURL(NSURL(string: urlString!)!)
+                    UIApplication.shared.openURL(URL(string: urlString!)!)
                 }
                 else
                 {
@@ -209,30 +209,30 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     //MARK --- Helpers
     
     // learned how to verify urls from this website: http://stackoverflow.com/questions/28079123/how-to-check-validity-of-url-in-swift
-    func verifyURL(urlString: String?) -> Bool
+    func verifyURL(_ urlString: String?) -> Bool
     {
         if let urlString = urlString
         {
-            if let url = NSURL(string: urlString)
+            if let url = URL(string: urlString)
             {
-                return UIApplication.sharedApplication().canOpenURL(url)
+                return UIApplication.shared.canOpenURL(url)
             }
         }
         
         return false
     }
     
-    func showAlertController(title: String, message: String)
+    func showAlertController(_ title: String, message: String)
     {
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             
             print("failure string from client: \(message)")
             
-            let alert: UIAlertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-            let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
+            let alert: UIAlertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
             alert.addAction(okAction)
             
-            self.presentViewController(alert, animated: true, completion: nil)
+            self.present(alert, animated: true, completion: nil)
         })
     }
 }

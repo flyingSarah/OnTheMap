@@ -37,7 +37,7 @@ struct StudentLocation {
     }
     
     //given an array of dictionaries, convert them to an array of Student Location result objects
-    static func locationsFromResults(results: [[String : AnyObject]]) -> [StudentLocation]
+    static func locationsFromResults(_ results: [[String : AnyObject]]) -> [StudentLocation]
     {
         var studentLocations = [StudentLocation]()
         

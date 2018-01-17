@@ -21,7 +21,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     //MARK --- Variables
     
     var appDelegate: AppDelegate!
-    var session: NSURLSession!
+    var session: URLSession!
     
     var tapRecognizer: UITapGestureRecognizer? = nil
     
@@ -32,36 +32,36 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
         
         //get the app delegate
-        appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate = UIApplication.shared.delegate as! AppDelegate
         
         //get the shared url session
-        session = NSURLSession.sharedSession()
+        session = URLSession.shared
         
         emailTextField.delegate = self
         passwordTextField.delegate = self
         
         //set placeholder text color
         //Found out how to do this from this stackoverflow topic: http://stackoverflow.com/questions/26076054/changing-placeholder-text-color-with-swift
-        emailTextField.attributedPlaceholder = NSAttributedString(string: "Email", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor()])
-        passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor()])
+        emailTextField.attributedPlaceholder = NSAttributedString(string: "Email", attributes: [NSAttributedStringKey.foregroundColor: UIColor.white])
+        passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [NSAttributedStringKey.foregroundColor: UIColor.white])
         
         //add a little left indent/padding on the text fields
         //Found how to do this from this stackoverflow topic: http://stackoverflow.com/questions/7565645/indent-the-text-in-a-uitextfield
         let emailSpacerView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
-        emailTextField.leftViewMode = UITextFieldViewMode.Always
+        emailTextField.leftViewMode = UITextFieldViewMode.always
         emailTextField.leftView = emailSpacerView
         let passwordSpacerView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
-        passwordTextField.leftViewMode = UITextFieldViewMode.Always
+        passwordTextField.leftViewMode = UITextFieldViewMode.always
         passwordTextField.leftView = passwordSpacerView
         
-        loginButton.enabled = false
+        loginButton.isEnabled = false
         
         //initialize tap recognizer
-        tapRecognizer = UITapGestureRecognizer(target: self, action: Selector("handleSingleTap:"))
+        tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(LoginViewController.handleSingleTap(_:)))
         tapRecognizer!.numberOfTapsRequired = 1
     }
     
-    override func viewWillAppear(animated: Bool)
+    override func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(animated)
         
@@ -69,7 +69,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         addKeyboardDismissRecognizer()
     }
 
-    override func viewWillDisappear(animated: Bool)
+    override func viewWillDisappear(_ animated: Bool)
     {
         super.viewWillDisappear(animated)
         
@@ -78,12 +78,12 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         
         emailTextField.text = ""
         passwordTextField.text = ""
-        loginButton.enabled = false
+        loginButton.isEnabled = false
     }
     
     //MARK --- Actions
     
-    @IBAction func loginToUdacity(sender: UIButton)
+    @IBAction func loginToUdacity(_ sender: UIButton)
     {
         dismissAnyVisibleKeyboards()
         
@@ -97,7 +97,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                 let failureString = error.localizedDescription
                 
                 //if the error string contains the word server, it's a server error not a password error
-                if(failureString.rangeOfString("server") != nil)
+                if(failureString.range(of: "server") != nil)
                 {
                     self.displayError("\(failureString)")
                 }
@@ -114,62 +114,62 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
-    @IBAction func signUpWithUdacity(sender: UIButton)
+    @IBAction func signUpWithUdacity(_ sender: UIButton)
     {
-        let url = NSURL(string: "https://www.google.com/url?q=https://www.udacity.com/account/auth%23!/signin&sa=D&usg=AFQjCNHOjlXo3QS15TqT0Bp_TKoR9Dvypw")!
-        UIApplication.sharedApplication().openURL(url)
+        let url = URL(string: "https://www.google.com/url?q=https://www.udacity.com/account/auth%23!/signin&sa=D&usg=AFQjCNHOjlXo3QS15TqT0Bp_TKoR9Dvypw")!
+        UIApplication.shared.openURL(url)
     }
     
     //MARK --- Login Behavior
     
     func completeLogin()
     {
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             
-            let controller = self.storyboard!.instantiateViewControllerWithIdentifier("UserTabBarController") as! UITabBarController
-            self.presentViewController(controller, animated: true, completion: nil)
+            let controller = self.storyboard!.instantiateViewController(withIdentifier: "UserTabBarController") as! UITabBarController
+            self.present(controller, animated: true, completion: nil)
         })
     }
     
     func shakeView()
     {
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             
             //learned how to make a shake animation from this website: http://stackoverflow.com/questions/27987048/shake-animation-for-uitextfield-uiview-in-swift
             let animation = CABasicAnimation(keyPath: "position")
             animation.duration = 0.07
             animation.repeatCount = 4
             animation.autoreverses = true
-            animation.fromValue = NSValue(CGPoint: CGPointMake(self.view.center.x - 5, self.view.center.y))
-            animation.toValue = NSValue(CGPoint: CGPointMake(self.view.center.x + 5, self.view.center.y))
-            self.view.layer.addAnimation(animation, forKey: "position")
+            animation.fromValue = NSValue(cgPoint: CGPoint(x: self.view.center.x - 5, y: self.view.center.y))
+            animation.toValue = NSValue(cgPoint: CGPoint(x: self.view.center.x + 5, y: self.view.center.y))
+            self.view.layer.add(animation, forKey: "position")
         })
     }
     
-    func displayError(errorString: String?)
+    func displayError(_ errorString: String?)
     {
         UdacityClient.sharedInstance().loginError = errorString
         
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             
             //learned how to implement an alert controller from this website: http://swiftoverload.com/uialertcontroller-swift-example/
-            let alert: UIAlertController = UIAlertController(title: "Login Failed", message: errorString, preferredStyle: .Alert)
-            let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
+            let alert: UIAlertController = UIAlertController(title: "Login Failed", message: errorString, preferredStyle: .alert)
+            let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
             alert.addAction(okAction)
             
-            self.presentViewController(alert, animated: true, completion: nil)
+            self.present(alert, animated: true, completion: nil)
         })
     }
     
-    @IBAction func textFieldChanged(sender: UITextField)
+    @IBAction func textFieldChanged(_ sender: UITextField)
     {
         if(emailTextField.text!.isEmpty || passwordTextField.text!.isEmpty)
         {
-            loginButton.enabled = false
+            loginButton.isEnabled = false
         }
         else
         {
-            loginButton.enabled = true
+            loginButton.isEnabled = true
         }
     }
     
@@ -186,12 +186,12 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         view.removeGestureRecognizer(tapRecognizer!)
     }
     
-    func handleSingleTap(recognizer: UITapGestureRecognizer)
+    @objc func handleSingleTap(_ recognizer: UITapGestureRecognizer)
     {
         view.endEditing(true)
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool
     {
         view.endEditing(true)
         return true
@@ -202,7 +202,7 @@ extension LoginViewController {
     
     func dismissAnyVisibleKeyboards()
     {
-        if(emailTextField.isFirstResponder() || passwordTextField.isFirstResponder())
+        if(emailTextField.isFirstResponder || passwordTextField.isFirstResponder)
         {
             view.endEditing(true)
         }

@@ -11,7 +11,7 @@ import Foundation
 class UdacityClient : NSObject {
     
     //shared session
-    var session: NSURLSession
+    var session: URLSession
     
     //authentication state
     var sessionID: String? = nil
@@ -28,33 +28,33 @@ class UdacityClient : NSObject {
     
     override init()
     {
-        session = NSURLSession.sharedSession()
+        session = URLSession.shared
         super.init()
     }
     
     //MARK --- Get
-    func taskForGetMethod(method: String, completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask
+    func taskForGetMethod(_ method: String, completionHandler: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionDataTask
     {
         //build the URL and configure the request
         let urlString = UdacityClient.Constants.BaseURLSecure + method
-        let url = NSURL(string: urlString)!
-        let request = NSURLRequest(URL: url)
+        let url = URL(string: urlString)!
+        let request = URLRequest(url: url)
         
         //make the request
-        let task = session.dataTaskWithRequest(request) { data, response, downloadError in
+        let task = session.dataTask(with: request, completionHandler: { data, response, downloadError in
             
             //parse and use the data (happens in completion handler)
             if let error = downloadError
             {
-                let newError = UdacityClient.errorForData(data, response: response, error: error)
-                completionHandler(result: nil, error: newError)
+                let newError = UdacityClient.errorForData(data, response: response, error: error as NSError)
+                completionHandler(nil, newError)
             }
             else
             {
-                let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) // subset response data
+                let newData = data!.subdata(in: 5..<(data!.count - 5)) // subset response data
                 UdacityClient.parseJSONWithCompletionHandler(newData, completionHandler: completionHandler)
             }
-        }
+        }) 
 
         //start the request
         task.resume()
@@ -62,40 +62,40 @@ class UdacityClient : NSObject {
     }
     
     //MARK --- Post
-    func taskForPostMethod(method: String, jsonBody: [String : AnyObject], completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask
+    func taskForPostMethod(_ method: String, jsonBody: [String : AnyObject], completionHandler: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionDataTask
     {
         //build the URL and configure the request
         let urlString = UdacityClient.Constants.BaseURLSecure + method
-        let url = NSURL(string: urlString)!
-        let request = NSMutableURLRequest(URL: url)
+        let url = URL(string: urlString)!
+        var request = URLRequest(url: url)
         
         var jsonifyError: NSError? = nil
         
-        request.HTTPMethod = "POST"
+        request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         do {
-            request.HTTPBody = try NSJSONSerialization.dataWithJSONObject(jsonBody, options: [])
+            request.httpBody = try JSONSerialization.data(withJSONObject: jsonBody, options: [])
         } catch let error as NSError {
             jsonifyError = error
-            request.HTTPBody = nil
+            request.httpBody = nil
         }
         
         //make the request
-        let task = session.dataTaskWithRequest(request) { data, response, downloadError in
+        let task = session.dataTask(with: request, completionHandler: { data, response, downloadError in
             
             //parse and use the data (happens in completion handler)
             if let error = downloadError
             {
-                let newError = UdacityClient.errorForData(data, response: response, error: error)
-                completionHandler(result: nil, error: newError)
+                let newError = UdacityClient.errorForData(data, response: response, error: error as NSError)
+                completionHandler(nil, newError)
             }
             else
             {
-                let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) //subset response data
+                let newData = data!.subdata(in: 5..<(data!.count - 5)) //subset response data
                 UdacityClient.parseJSONWithCompletionHandler(newData, completionHandler: completionHandler)
             }
-        }
+        }) 
         
         //start the request
         task.resume()
@@ -103,16 +103,16 @@ class UdacityClient : NSObject {
     }
     
     //MARK --- Delete
-    func taskForDeleteMethod(method: String, completionHandler: (result: AnyObject!, error: NSError?) -> Void) -> NSURLSessionDataTask
+    func taskForDeleteMethod(_ method: String, completionHandler: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void) -> URLSessionDataTask
     {
         //build the URL and configure the request
         let urlString = UdacityClient.Constants.BaseURLSecure + method
-        let url = NSURL(string: urlString)!
-        let request = NSMutableURLRequest(URL: url)
-        var xsrfCookie: NSHTTPCookie? = nil
-        request.HTTPMethod = "DELETE"
-        let sharedCookieStorage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
-        for cookie in sharedCookieStorage.cookies! as [NSHTTPCookie]
+        let url = URL(string: urlString)!
+        var request = URLRequest(url: url)
+        var xsrfCookie: HTTPCookie? = nil
+        request.httpMethod = "DELETE"
+        let sharedCookieStorage = HTTPCookieStorage.shared
+        for cookie in sharedCookieStorage.cookies! as [HTTPCookie]
         {
             if(cookie.name == "XSRF-TOKEN")
             {
@@ -125,20 +125,20 @@ class UdacityClient : NSObject {
         }
         
         //make the request
-        let task = session.dataTaskWithRequest(request) { data, response, downloadError in
+        let task = session.dataTask(with: request, completionHandler: { data, response, downloadError in
             
             //parse and use the data (happens in completion handler)
             if let error = downloadError
             {
-                let newError = UdacityClient.errorForData(data, response: response, error: error)
-                completionHandler(result: nil, error: newError)
+                let newError = UdacityClient.errorForData(data, response: response, error: error as NSError)
+                completionHandler(nil, newError)
             }
             else
             {
-                let newData = data!.subdataWithRange(NSMakeRange(5, data!.length - 5)) //subset response data
+                let newData = data!.subdata(in: 5..<(data!.count - 5)) //subset response data
                 UdacityClient.parseJSONWithCompletionHandler(newData, completionHandler: completionHandler)
             }
-        }
+        }) 
         
         //start the request
         task.resume()
@@ -158,9 +158,9 @@ class UdacityClient : NSObject {
     }*/
     
     //Given a response with error, see if a status_message is returned, otherwise return the previous error
-    class func errorForData(data: NSData?, response: NSURLResponse?, error: NSError) -> NSError
+    class func errorForData(_ data: Data?, response: URLResponse?, error: NSError) -> NSError
     {
-        if let parsedResult = (try? NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments)) as? [String : AnyObject]
+        if let parsedResult = (try? JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.allowFragments)) as? [String : AnyObject]
         {
             if let errorMessage = parsedResult[UdacityClient.JSONResponseKeys.StatusMessage] as? String
             {
@@ -179,13 +179,13 @@ class UdacityClient : NSObject {
     }
     
     //Given raw JSON, return a useable Foundation object
-    class func parseJSONWithCompletionHandler(data: NSData, completionHandler: (result: AnyObject!, error: NSError?) -> Void)
+    class func parseJSONWithCompletionHandler(_ data: Data, completionHandler: (_ result: AnyObject?, _ error: NSError?) -> Void)
     {
         var parsingError: NSError? = nil
         
         let parsedResult: AnyObject?
         do {
-            parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments)
+            parsedResult = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments) as AnyObject
         } catch let error as NSError {
             parsingError = error
             parsedResult = nil
@@ -193,11 +193,11 @@ class UdacityClient : NSObject {
         
         if let error = parsingError
         {
-            completionHandler(result: nil, error: error)
+            completionHandler(nil, error)
         }
         else
         {
-            completionHandler(result: parsedResult, error: nil)
+            completionHandler(parsedResult, nil)
         }
     }
     

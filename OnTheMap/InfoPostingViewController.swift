@@ -34,7 +34,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
         super.viewDidLoad()
         
         //get the app delegate
-        appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate = UIApplication.shared.delegate as! AppDelegate
         
         locationTextField.delegate = self
         urlTextField.delegate = self
@@ -42,19 +42,19 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
         mapView.delegate = self
         
         //set placeholder text color
-        locationTextField.attributedPlaceholder = NSAttributedString(string: "Enter Location", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor()])
-        urlTextField.attributedPlaceholder = NSAttributedString(string: "Enter a URL to share", attributes: [NSForegroundColorAttributeName: UIColor.whiteColor()])
+        locationTextField.attributedPlaceholder = NSAttributedString(string: "Enter Location", attributes: [NSAttributedStringKey.foregroundColor: UIColor.white])
+        urlTextField.attributedPlaceholder = NSAttributedString(string: "Enter a URL to share", attributes: [NSAttributedStringKey.foregroundColor: UIColor.white])
         
-        findButton.enabled = false
-        submitButton.enabled = false
-        browseButton.enabled = false
+        findButton.isEnabled = false
+        submitButton.isEnabled = false
+        browseButton.isEnabled = false
         
         //initialize tap recognizer
-        tapRecognizer = UITapGestureRecognizer(target: self, action: Selector("handleSingleTap:"))
+        tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(InfoPostingViewController.handleSingleTap(_:)))
         tapRecognizer!.numberOfTapsRequired = 1
     }
     
-    override func viewWillAppear(animated: Bool)
+    override func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(animated)
         
@@ -84,16 +84,16 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
             //Zoom in on the map pin
             self.mapView.setRegion(MKCoordinateRegionMakeWithDistance(annotation.coordinate, 5000, 5000), animated: false)
             
-            submitButton.enabled = true
-            findButton.enabled = true
-            browseButton.enabled = true
+            submitButton.isEnabled = true
+            findButton.isEnabled = true
+            browseButton.isEnabled = true
         }
         
         //add the tap recognizer
         addKeyboardDismissRecognizer()
     }
     
-    override func viewWillDisappear(animated: Bool)
+    override func viewWillDisappear(_ animated: Bool)
     {
         super.viewWillDisappear(animated)
         
@@ -102,16 +102,16 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
     }
     
     //MARK --- Actions
-    @IBAction func findLocation(sender: AnyObject)
+    @IBAction func findLocation(_ sender: AnyObject)
     {
         dismissAnyVisibleKeyboards()
         
         //use an activity monitor for this action
         let activityIndicator = UIActivityIndicatorView()
         activityIndicator.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
-        activityIndicator.activityIndicatorViewStyle = .Gray
+        activityIndicator.activityIndicatorViewStyle = .gray
         activityIndicator.center = view.center
-        activityIndicator.hidden = false
+        activityIndicator.isHidden = false
         activityIndicator.startAnimating()
         view.addSubview(activityIndicator)
         
@@ -138,18 +138,18 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
             }
             
             activityIndicator.stopAnimating()
-            activityIndicator.hidden = true
-        })
+            activityIndicator.isHidden = true
+        } as! CLGeocodeCompletionHandler)
     }
     
-    @IBAction func browseURL(sender: AnyObject)
+    @IBAction func browseURL(_ sender: AnyObject)
     {
         let urlString = urlTextField.text
         
         if(verifyURL(urlString))
         {
             //open the url if valid
-            UIApplication.sharedApplication().openURL(NSURL(string: urlString!)!)
+            UIApplication.shared.openURL(URL(string: urlString!)!)
         }
         else
         {
@@ -158,7 +158,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
         }
     }
     
-    @IBAction func postInfo(sender: AnyObject)
+    @IBAction func postInfo(_ sender: AnyObject)
     {
         dismissAnyVisibleKeyboards()
     
@@ -196,57 +196,57 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
             else
             {
                 print("Successfully posted user info!")
-                self.dismissViewControllerAnimated(true, completion: nil)
+                self.dismiss(animated: true, completion: nil)
             }
         }
     }
     
-    @IBAction func cancel(sender: AnyObject)
+    @IBAction func cancel(_ sender: AnyObject)
     {
-        dismissViewControllerAnimated(true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func textFieldChanged(sender: UITextField)
+    @IBAction func textFieldChanged(_ sender: UITextField)
     {
         //only enable the find button if the location text field isn't empty
         if(locationTextField.text!.isEmpty)
         {
-            findButton.enabled = false
+            findButton.isEnabled = false
         }
         else
         {
-            findButton.enabled = true
+            findButton.isEnabled = true
         }
         
         //only enable the browse button if the url text field isn't empty
         if(urlTextField.text!.isEmpty)
         {
-            browseButton.enabled = false
+            browseButton.isEnabled = false
         }
         else
         {
-            browseButton.enabled = true
+            browseButton.isEnabled = true
         }
         
         //only enable the submit button if neither of the info text fields are empty and if the map has found a valid location
         if(urlTextField.text!.isEmpty || locationTextField.text!.isEmpty)
         {
-            submitButton.enabled = false
+            submitButton.isEnabled = false
         }
         else if(mapView.annotations.isEmpty)
         {
-            submitButton.enabled = false
+            submitButton.isEnabled = false
         }
         else
         {
-            submitButton.enabled = true
+            submitButton.isEnabled = true
         }
     }
     
     //only call this after latitude and longitude has been set using the findLocation function
     func setPinOnMap()
     {
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             
             //first remove any annotation currently showing on the map
             self.mapView.removeAnnotations(self.mapView.annotations)
@@ -278,19 +278,19 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
     }
     
     //MARK --- MKMapViewDelegate functions that allow you to click on URLs in the pin veiw on the map
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView?
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView?
     {
         let reuseID = "pin"
         
-        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseID) as? MKPinAnnotationView
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseID) as? MKPinAnnotationView
         
         if(pinView == nil)
         {
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseID)
             pinView!.canShowCallout = true
             let thisTitle = annotation.title!
-            pinView!.pinColor = .Red
-            pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
+            pinView!.pinColor = .red
+            pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
         }
         else
         {
@@ -300,7 +300,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
         return pinView
     }
     
-    func mapView(mapView: MKMapView, annotationView: MKAnnotationView, calloutAccessoryControlTapped control: UIControl)
+    func mapView(_ mapView: MKMapView, annotationView: MKAnnotationView, calloutAccessoryControlTapped control: UIControl)
     {
         if(annotationView.annotation!.subtitle! != "You have not entered a URL")
         {
@@ -311,7 +311,7 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
                 if(verifyURL(urlString))
                 {
                     //open the url if valid
-                    UIApplication.sharedApplication().openURL(NSURL(string: urlString!)!)
+                    UIApplication.shared.openURL(URL(string: urlString!)!)
                 }
                 else
                 {
@@ -335,12 +335,12 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
         view.removeGestureRecognizer(tapRecognizer!)
     }
     
-    func handleSingleTap(recognizer: UITapGestureRecognizer)
+    @objc func handleSingleTap(_ recognizer: UITapGestureRecognizer)
     {
         view.endEditing(true)
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool
     {
         view.endEditing(true)
         return true
@@ -348,30 +348,30 @@ class InfoPostingViewController : UIViewController, UITextFieldDelegate, MKMapVi
     
     //MARK --- Other Helpers
     
-    func verifyURL(urlString: String?) -> Bool
+    func verifyURL(_ urlString: String?) -> Bool
     {
         if let urlString = urlString
         {
-            if let url = NSURL(string: urlString)
+            if let url = URL(string: urlString)
             {
-                return UIApplication.sharedApplication().canOpenURL(url)
+                return UIApplication.shared.canOpenURL(url)
             }
         }
         
         return false
     }
     
-    func showAlertController(title: String, message: String)
+    func showAlertController(_ title: String, message: String)
     {
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             
             print("failure string from client: \(message)")
             
-            let alert: UIAlertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-            let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
+            let alert: UIAlertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
             alert.addAction(okAction)
             
-            self.presentViewController(alert, animated: true, completion: nil)
+            self.present(alert, animated: true, completion: nil)
         })
     }
 }
@@ -380,7 +380,7 @@ extension InfoPostingViewController {
     
     func dismissAnyVisibleKeyboards()
     {
-        if(locationTextField.isFirstResponder() || urlTextField.isFirstResponder())
+        if(locationTextField.isFirstResponder || urlTextField.isFirstResponder)
         {
             view.endEditing(true)
         }

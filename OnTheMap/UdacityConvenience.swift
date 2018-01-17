@@ -11,55 +11,55 @@ import Foundation
 
 extension UdacityClient {
     
-    func createSession(username: String, password: String, completionHandler: (message: String, error: NSError?) -> Void)
+    func createSession(_ username: String, password: String, completionHandler: @escaping (_ message: String, _ error: NSError?) -> Void)
     {
         //Specify method and HTTP body
         let method: String = UdacityClient.Methods.AccountLogIn
         
-        let jsonBody: [String : AnyObject] = [
+        let jsonBody: [String : [String : AnyObject]] = [
             "udacity" : [
-                UdacityClient.JSONBodyKeys.Username : username,
-                UdacityClient.JSONBodyKeys.Password : password
+                UdacityClient.JSONBodyKeys.Username : username as AnyObject,
+                UdacityClient.JSONBodyKeys.Password : password as AnyObject
             ]
         ]
         
         //make the request
-        taskForPostMethod(method, jsonBody: jsonBody) { JSONResult, error in
+        taskForPostMethod(method, jsonBody: jsonBody as [String : AnyObject]) { JSONResult, error in
             
             //send the desired values to the completion handler
             if let error = error
             {
-                completionHandler(message: "Sign In Failed", error: error)
+                completionHandler("Sign In Failed", error)
             }
             else
             {
-                if let account = JSONResult.valueForKey(UdacityClient.JSONResponseKeys.Account) as? NSDictionary
+                if let account = JSONResult?.value(forKey: UdacityClient.JSONResponseKeys.Account) as? NSDictionary
                 {
-                    if let userID = account.valueForKey(UdacityClient.JSONResponseKeys.UserID) as? String
+                    if let userID = account.value(forKey: UdacityClient.JSONResponseKeys.UserID) as? String
                     {
                         //get the user data from here
                         self.getPublicUserData(userID) { message, error in
                             
                             if let error = error
                             {
-                                completionHandler(message: message, error: error)
+                                completionHandler(message, error)
                             }
                             else
                             {
-                                completionHandler(message: message, error: nil)
+                                completionHandler(message, nil)
                             }
                         }
                     }
                 }
                 else
                 {
-                    completionHandler(message: "Couldn't find account dictionary in createSession result", error: NSError(domain: "createSession parsing", code: 0, userInfo: [NSLocalizedDescriptionKey : "Please check your username and password and try again."]))
+                    completionHandler("Couldn't find account dictionary in createSession result", NSError(domain: "createSession parsing", code: 0, userInfo: [NSLocalizedDescriptionKey : "Please check your username and password and try again."]))
                 }
             }
         }
     }
     
-    func logoutOfSession(completionHandler: (message: String, error: NSError?) -> Void)
+    func logoutOfSession(_ completionHandler: @escaping (_ message: String, _ error: NSError?) -> Void)
     {
         //specify method
         let method: String = UdacityClient.Methods.AccountLogIn
@@ -70,27 +70,27 @@ extension UdacityClient {
             //send the desired values to the completion handler
             if let error = error
             {
-                completionHandler(message: "Logout Failed", error: error)
+                completionHandler("Logout Failed", error)
             }
             else
             {
-                if let session = JSONResult.valueForKey(UdacityClient.JSONResponseKeys.Session) as? NSDictionary
+                if let session = JSONResult?.value(forKey: UdacityClient.JSONResponseKeys.Session) as? NSDictionary
                 {
-                    if let sessionID = session.valueForKey(UdacityClient.JSONResponseKeys.SessionID) as? String
+                    if let sessionID = session.value(forKey: UdacityClient.JSONResponseKeys.SessionID) as? String
                     {
                         //get the user data from here
-                        completionHandler(message: "Logout Successful", error: nil)
+                        completionHandler("Logout Successful", nil)
                     }
                 }
                 else
                 {
-                    completionHandler(message: "Couldn't find session dictionary in logoutOfSession result", error: NSError(domain: "logoutOfSession parsing", code: 0, userInfo: [NSLocalizedDescriptionKey : "Unknown error: Try logging out again."]))
+                    completionHandler("Couldn't find session dictionary in logoutOfSession result", NSError(domain: "logoutOfSession parsing", code: 0, userInfo: [NSLocalizedDescriptionKey : "Unknown error: Try logging out again."]))
                 }
             }
         }
     }
     
-    func getPublicUserData(userID: String, completionHandler: (message: String, error: NSError?) -> Void)
+    func getPublicUserData(_ userID: String, completionHandler: @escaping (_ message: String, _ error: NSError?) -> Void)
     {
         //Specify method
         let method: String = UdacityClient.Methods.AccountUserData + userID
@@ -100,35 +100,35 @@ extension UdacityClient {
             //send the desired values to the completion handler
             if let error = error
             {
-                completionHandler(message: "Getting Public User Data Failed", error: error)
+                completionHandler("Getting Public User Data Failed", error)
             }
             else
             {
-                if let userDictionary = JSONResult.valueForKey(UdacityClient.JSONResponseKeys.User) as? NSDictionary
+                if let userDictionary = JSONResult?.value(forKey: UdacityClient.JSONResponseKeys.User) as? NSDictionary
                 {
-                    if let firstName = userDictionary.valueForKey(UdacityClient.JSONResponseKeys.FirstName) as? String
+                    if let firstName = userDictionary.value(forKey: UdacityClient.JSONResponseKeys.FirstName) as? String
                     {
-                        if let lastName = userDictionary.valueForKey(UdacityClient.JSONResponseKeys.LastName) as? String
+                        if let lastName = userDictionary.value(forKey: UdacityClient.JSONResponseKeys.LastName) as? String
                         {
                             UdacityClient.sharedInstance().userID = userID
                             UdacityClient.sharedInstance().firstName = firstName
                             UdacityClient.sharedInstance().lastName = lastName
                             
-                            completionHandler(message: "User Info aquired! UserID: \(userID) FirstName: \(firstName) LastName: \(lastName)", error: nil)
+                            completionHandler("User Info aquired! UserID: \(userID) FirstName: \(firstName) LastName: \(lastName)", nil)
                         }
                         else
                         {
-                            completionHandler(message: "Unable to find last name in userDictionary", error: NSError(domain: "getPublicUserData parsing", code: 0, userInfo: [NSLocalizedDescriptionKey : "Could not parse getPublicUserData"]))
+                            completionHandler("Unable to find last name in userDictionary", NSError(domain: "getPublicUserData parsing", code: 0, userInfo: [NSLocalizedDescriptionKey : "Could not parse getPublicUserData"]))
                         }
                     }
                     else
                     {
-                        completionHandler(message: "Unable to find first name in userDictionary", error: NSError(domain: "getPublicUserData parsing", code: 0, userInfo: [NSLocalizedDescriptionKey : "Could not parse getPublicUserData"]))
+                        completionHandler("Unable to find first name in userDictionary", NSError(domain: "getPublicUserData parsing", code: 0, userInfo: [NSLocalizedDescriptionKey : "Could not parse getPublicUserData"]))
                     }
                 }
                 else
                 {
-                    completionHandler(message: "Couldn't find user dictionary in getPublicUserData result", error: NSError(domain: "getPublicUserData parsing", code: 0, userInfo: [NSLocalizedDescriptionKey : "Unknown Udacity error -- please check your username and password and try again."]))
+                    completionHandler("Couldn't find user dictionary in getPublicUserData result", NSError(domain: "getPublicUserData parsing", code: 0, userInfo: [NSLocalizedDescriptionKey : "Unknown Udacity error -- please check your username and password and try again."]))
                 }
             }
         }

@@ -25,12 +25,12 @@ class TableViewController : UITableViewController {
         super.viewDidLoad()
         
         //create the needed bar button items
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("logout:"))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: UIBarButtonItemStyle.plain, target: self, action: #selector(TableViewController.logout(_:)))
         
-        let refreshButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Refresh, target: self, action: Selector("refreshButtonClicked:"))
+        let refreshButton: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.refresh, target: self, action: #selector(TableViewController.refreshButtonClicked(_:)))
         
         let pinImage: UIImage = UIImage(named: "pin")!
-        let pinButton: UIBarButtonItem = UIBarButtonItem(image: pinImage, style: UIBarButtonItemStyle.Plain, target: self, action: Selector("addPin:"))
+        let pinButton: UIBarButtonItem = UIBarButtonItem(image: pinImage, style: UIBarButtonItemStyle.plain, target: self, action: #selector(TableViewController.addPin(_:)))
         
         let buttons = [refreshButton, pinButton]
         
@@ -40,7 +40,7 @@ class TableViewController : UITableViewController {
         setLocations()
     }
     
-    override func viewWillAppear(animated: Bool)
+    override func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(animated)
         
@@ -53,7 +53,7 @@ class TableViewController : UITableViewController {
     
     //MARK --- Tab Bar Buttons
     
-    func logout(sender: AnyObject)
+    @objc func logout(_ sender: AnyObject)
     {
         UdacityClient.sharedInstance().logoutOfSession() { result, error in
             
@@ -66,23 +66,23 @@ class TableViewController : UITableViewController {
             {
                 print("Successfully logged out of Udacity session")
                 
-                self.dismissViewControllerAnimated(true, completion: nil)
+                self.dismiss(animated: true, completion: nil)
             }
         }
     }
     
-    func addPin(sender: AnyObject)
+    @objc func addPin(_ sender: AnyObject)
     {
         //Grab the information posting VC from Storyboard
-        let object:AnyObject = storyboard!.instantiateViewControllerWithIdentifier("InfoPostingViewController")
+        let object:AnyObject = storyboard!.instantiateViewController(withIdentifier: "InfoPostingViewController")
         
         let addPinVC = object as! InfoPostingViewController
         
         //present the view controller
-        presentViewController(addPinVC, animated: true, completion: nil)
+        present(addPinVC, animated: true, completion: nil)
     }
     
-    func refreshButtonClicked(sender: AnyObject)
+    @objc func refreshButtonClicked(_ sender: AnyObject)
     {
         setLocations()
     }
@@ -109,15 +109,15 @@ class TableViewController : UITableViewController {
         }
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         return ParseClient.sharedInstance().studentLocations.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let student = ParseClient.sharedInstance().studentLocations[indexPath.row]
-        let cell = tableView.dequeueReusableCellWithIdentifier("studentCell", forIndexPath: indexPath) 
+        let cell = tableView.dequeueReusableCell(withIdentifier: "studentCell", for: indexPath) 
         
         cell.textLabel!.text = "\(student.firstName) \(student.lastName)"
         
@@ -136,9 +136,9 @@ class TableViewController : UITableViewController {
         return cell
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
-        let student = tableView.cellForRowAtIndexPath(indexPath)
+        let student = tableView.cellForRow(at: indexPath)
         
         if let urlString = student?.detailTextLabel?.text
         {
@@ -146,7 +146,7 @@ class TableViewController : UITableViewController {
             {
                 //open the url if valid
                 print("open url: \(urlString)")
-                UIApplication.sharedApplication().openURL(NSURL(string: urlString)!)
+                UIApplication.shared.openURL(URL(string: urlString)!)
             }
             else
             {
@@ -160,30 +160,30 @@ class TableViewController : UITableViewController {
     //MARK --- Helpers
     
     //verify url
-    func verifyURL(urlString: String?) -> Bool
+    func verifyURL(_ urlString: String?) -> Bool
     {
         if let urlString = urlString
         {
-            if let url = NSURL(string: urlString)
+            if let url = URL(string: urlString)
             {
-                return UIApplication.sharedApplication().canOpenURL(url)
+                return UIApplication.shared.canOpenURL(url)
             }
         }
         
         return false
     }
     
-    func showAlertController(title: String, message: String)
+    func showAlertController(_ title: String, message: String)
     {
-        dispatch_async(dispatch_get_main_queue(), {
+        DispatchQueue.main.async(execute: {
             
             print("failure string from client: \(message)")
             
-            let alert: UIAlertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-            let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
+            let alert: UIAlertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            let okAction: UIAlertAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
             alert.addAction(okAction)
             
-            self.presentViewController(alert, animated: true, completion: nil)
+            self.present(alert, animated: true, completion: nil)
         })
     }
 }
